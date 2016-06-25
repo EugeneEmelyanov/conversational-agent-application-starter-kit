@@ -38,6 +38,7 @@
     "q": "^1.4.1",
     "request": "^2.72.0",
     "trim": "0.0.1",
+    "twilio": "^2.9.1",
     "watson-developer-cloud": "^1.9.3"
   },
   "devDependencies": {
