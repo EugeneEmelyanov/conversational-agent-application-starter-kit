@@ -20,10 +20,9 @@ var request = require('request');
 var moment = require('moment');
 var util = require('util');
 
-var MOVIE_URL = 'http://api.themoviedb.org/3/movie/';
-var DISCOVER_URL = 'http://api.themoviedb.org/3/discover/movie';
-var GENRE_URL = 'http://api.themoviedb.org/3/genre/movie/list';
-var POSTER_BASE_URL = 'http://image.tmdb.org/t/p/w300/';
+var MOVIE_URL = 'https://app.ticketmaster.com/discovery/v2/events/';
+var DISCOVER_URL = 'https://app.ticketmaster.com/discovery/v2/events.json';
+var GENRE_URL = 'https://app.ticketmaster.com/discovery/v2/classifications/KZFzniwnSyZfZ7v7nJ.json';
 var YOUTUBE_TRAILER_URL = 'https://www.youtube.com/embed/%s?controls=0&amp;showinfo=0';
 var TMDB_PAGE_SIZE = 20;
 var RESULT_SIZE = 10;
@@ -48,11 +47,7 @@ function getTrailer(movie) {
  * Returns the Popularity only if the movie has more than 10 votes
  */
 function getPopularity(movie) {
-  if (movie.vote_count >= 10) {
-    return movie.vote_average;
-  } else {
-    return -1;
-  }
+  return 10;
 }
 
 /**
@@ -72,17 +67,14 @@ function getUSRelease(movie) {
  * Returns the US release date
  */
 function getReleaseDate(movie) {
-  return getUSRelease(movie).release_date || '';
+  return movie.dates.start.dateTime || '';
 }
 
 /**
  * Returns the US movie poster if exits
  */
 function getPoster(movie) {
-  if (movie.poster_path)
-    return POSTER_BASE_URL + movie.poster_path;
-  else
-    return '';
+  return movie.images[0].url;
 }
 
 /**
@@ -91,7 +83,7 @@ function getPoster(movie) {
  * @param  {[type]} genres The genre array
  */
 function getGenre(name, genres) {
-  var index = genres.map(function(e) { return e.name; }).indexOf(name);
+  var index = genres.map(function(e) { return e.name.toLowerCase(); }).indexOf(name.toLowerCase());
   if (index !== -1)
     return genres[index];
   else
@@ -100,14 +92,14 @@ function getGenre(name, genres) {
 
 module.exports = function(key) {
   var tmdbRequest = request.defaults({
-    qs: {api_key: key}
+    qs: {apikey: key}
   });
 
   // initialize the genres array
   var genres = [];
   tmdbRequest(GENRE_URL, function(err, resp, body) {
     if (!err)
-      genres = JSON.parse(body.toLowerCase()).genres;
+      genres = JSON.parse(body).segment._embedded.genres;
   });
 
 
@@ -117,26 +109,24 @@ module.exports = function(key) {
      * by the user during the dialog
      */
     searchMovies: function(params, callback) {
-      var today = moment().format('YYYY-MM-DD');
-      var lastMonth = moment().month(-1).format('YYYY-MM-DD');
-      var next6Months = moment().month(6).format('YYYY-MM-DD');
+      var today = moment().format('YYYY-MM-DDT00:00:00') + "Z";
+      var today_end  = moment().format('YYYY-MM-DDT23:00:00') + "Z";
+      var next6Months  = moment().month(6).format('YYYY-MM-DDT00:00:00') + "Z";
 
       var query = {
-        sort_by: 'popularity.desc',
-        'primary_release_date.gte': (params.recency === 'current' ?  lastMonth : today),
-        'primary_release_date.lte': (params.recency === 'current' ?  today : next6Months)
+        //'startDateTime': (params.recency === 'current' ?  today : today_end),
+        //'endDateTime': (params.recency === 'current' ?  today_end : next6Months)
       };
 
       // ratings: R, G, PG, PG-13
-      if (params.rating) {
-        query.certification_country = 'US';
-        query.certification = params.rating.toUpperCase();
+      if (params.location) {
+        query.city = params.location;
       }
 
       // genre
       var genre = getGenre(params.genre, genres);
       if (genre.id)
-        query.with_genres = genre.id;
+        query.classificationId = genre.id;
 
       params.index = parseInt(params.index);
       if (params.page === 'previous')
@@ -150,19 +140,19 @@ module.exports = function(key) {
         if (err)
           return callback(err);
 
-        var top10movies = body.results
-        .slice(index, index + Math.min(RESULT_SIZE, body.results.length - index))
+        var top10movies = body._embedded.events
+        .slice(index, index + Math.min(RESULT_SIZE, body._embedded.events.length - index))
         .map(function(movie) {
           return {
             movie_id: movie.id,
-            movie_name: movie.title
+            movie_name: movie.name
           };
         });
 
         var results = {
-          page: body.page,
-          total_pages: body.total_pages,
-          total_movies: body.total_results,
+          page: body.page.number,
+          total_pages: body.page.totalPages,
+          total_movies: body.page.totalElements,
           movies: top10movies,
           curent_index: params.index + top10movies.length
         };
@@ -184,13 +174,13 @@ module.exports = function(key) {
 
         var movie = {
           movie_id: body.id,
-          movie_name: body.title,
-          overview: body.overview,
+          movie_name: body.name,
+          overview: body.pleaseNote,
           runtime: body.runtime,
+          url: body.url,
+          images: body.images,
           popularity: getPopularity(body),
           poster_path: getPoster(body),
-          trailer_url: getTrailer(body),
-          certification: getUSRelease(body).certification || '',
           release_date: getReleaseDate(body)
         };
 

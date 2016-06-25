@@ -39,7 +39,8 @@
   gulp.task('nodemon', ['set-env'], function(cb) {
     return $.nodemon({
       script: 'server.js',
-      ignore: [ 'Gulpfile.js', 'node_modules/' ]
+      ignore: [ 'Gulpfile.js', 'node_modules/' ],
+      nodeArgs: ['--debug']
     });
   });
 

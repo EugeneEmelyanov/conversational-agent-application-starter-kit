@@ -9,25 +9,25 @@
                 </prompt>
                 <getUserInput id="getUserInput_2508591">
                     <input isAutoLearnCandidate="true"
-                        isRelatedNodeCandidate="true" comment="$ music&#xa;$ want to see something&#xa;$ planning to go see&#xa;$ planning to go to the&#xa;$ going out to see&#xa;$ planning to see&#xa;$ want to go see&#xa;$ thinking of seeing&#xa;$ thinking we want to see&#xa;$ what do you recommend&#xa;$ can you recommend something&#xa;$ what are your recommendations">
+                        isRelatedNodeCandidate="true" comment="$ events&#xa;$ want to see something&#xa;$ planning to go see&#xa;$ planning to go to the&#xa;$ going out to see&#xa;$ planning to see&#xa;$ want to go see&#xa;$ thinking of seeing&#xa;$ thinking we want to see&#xa;$ what do you recommend&#xa;$ can you recommend something&#xa;$ what are your recommendations">
                         <grammar>
-                            <item>Genre, Location, Recency</item>
+                            <item>Segment, Genre, Recency</item>
+                            <item>$ (SEGMENT)={Segment_Preference}</item>
                             <item>$ (GENRE)={Genre_Preference}</item>
-                            <item>$ (LOCATION)={Location_Preference}</item>
                             <item>$ (RECENCY)={Recency_Preference}</item>
-                            <item>$ music</item>
+                            <item>$ events</item>
                         </grammar>
+                        <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                         <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
-                        <action varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
                         <action varName="Recency_Preference" operator="SET_TO">{Recency_Preference.value:main}</action>
-                        <action varName="Topic" operator="SET_TO">music</action>
+                        <action varName="Topic" operator="SET_TO">events</action>
                         <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                         <goto ref="search_2414738"/>
                     </input>
                     <input>
                         <grammar>
-                            <item>Music-related</item>
-                            <item>$ (BY_OTHER_MUSIC)={Topic}</item>
+                            <item>Event-related</item>
+                            <item>$ (BY_OTHER_EVENT)={Topic}</item>
                             <item>$ showtimes</item>
                             <item>$ theaters</item>
                             <item>$ fandango</item>
@@ -35,8 +35,8 @@
                             <item>$ review</item>
                             <item>$ critiques</item>
                             <item>$ critique</item>
-                            <item>$ old music</item>
-                            <item>$ classic music</item>
+                            <item>$ old events</item>
+                            <item>$ classic events</item>
                             <item>$ oldies</item>
                             <item>$ classics</item>
                             <item>$ trailers</item>
@@ -118,7 +118,7 @@
                 </getUserInput>
                 <output id="output_2508831">
                     <prompt selectionType="RANDOM">
-                        <item>Would you like to find a music that's now playing or coming soon?</item>
+                        <item>Would you like to find a event that's now playing or coming soon?</item>
                     </prompt>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <action varName="Class2" operator="SET_TO_BLANK"/>
@@ -169,7 +169,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                             <cond varName="Class1_Confidence" operator="LESS_THEN">0.90</cond>
                             <cond varName="Class1_Confidence" operator="GREATER_THEN">0.75</cond>
                             <if matchType="ANY">
-                                <cond varName="Class1" operator="EQUALS">SearchMusic</cond>
+                                <cond varName="Class1" operator="EQUALS">SearchEvents</cond>
                                 <cond varName="Class1" operator="EQUALS">CheckShowtimes</cond>
                                 <cond varName="Class1" operator="EQUALS">LookupActors</cond>
                                 <cond varName="Class1" operator="EQUALS">LookupDirectors</cond>
@@ -243,12 +243,12 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                             <cond varName="Combined_Confidence" operator="GREATER_THEN">0.85</cond>
                             <cond varName="Combined_Confidence" operator="EQUALS">0.85</cond>
                             <if matchType="ANY">
-                                <cond varName="Class1" operator="EQUALS">SearchMusic</cond>
+                                <cond varName="Class1" operator="EQUALS">SearchEvents</cond>
                                 <cond varName="Class1" operator="EQUALS">CheckShowtimes</cond>
                                 <cond varName="Class1" operator="EQUALS">LookupActors</cond>
                                 <cond varName="Class1" operator="EQUALS">LookupDirectors</cond>
                                 <if matchType="ANY">
-                                    <cond varName="Class2" operator="EQUALS">SearchMusic</cond>
+                                    <cond varName="Class2" operator="EQUALS">SearchEvents</cond>
                                     <cond varName="Class2" operator="EQUALS">CheckShowtimes</cond>
                                     <cond varName="Class2" operator="EQUALS">LookupActors</cond>
                                     <cond varName="Class2" operator="EQUALS">LookupDirectors</cond>
@@ -259,10 +259,10 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                         </if>
                         <output isInsertDNRStatement="true" id="output_2531608">
                             <prompt selectionType="SEQUENTIAL">
-                                <item>I'm not sure what you mean. Try &lt;i&gt;Looking for music events?&lt;/i&gt;
+                                <item>I'm not sure what you mean. Try &lt;i&gt;Search for events?&lt;/i&gt;
 </item>
-                                <item>I'm afraid I don't understand. I can't recognize music events at this time.</item>
-                                <item>I'm sorry, I don't understand. Try &lt;i&gt;Search for music events?&lt;/i&gt;</item>
+                                <item>I'm afraid I don't understand. I can't recognize event titles at this time.</item>
+                                <item>I'm sorry, I don't understand. Try &lt;i&gt;What's playing?&lt;/i&gt;</item>
                             </prompt>
                             <goto ref="##special_DNR_GET_USER_INPUT_NODE_ID"/>
                         </output>
@@ -292,16 +292,16 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     <action varName="Current_Index" operator="SET_TO">0</action>
                     <action varName="Terminal_Exchange" operator="SET_TO_NO"/>
                     <action varName="Topic" operator="SET_TO_BLANK"/>
-                    <action varName="Display_Music_Details" operator="SET_TO_NO"/>
+                    <action varName="Display_Event_Details" operator="SET_TO_NO"/>
                     <action varName="Display_Reviews" operator="SET_TO_NO"/>
                     <action varName="Popularity_Score" operator="SET_TO">0.5</action>
                     <action varName="ZIP_Code_Preference" operator="SET_TO_BLANK"/>
                     <action varName="Display_Trailer" operator="SET_TO_NO"/>
-                    <action varName="Selected_Music" operator="SET_TO_BLANK"/>
+                    <action varName="Selected_Event" operator="SET_TO_BLANK"/>
                     <action varName="Recency_Preference" operator="SET_TO_BLANK"/>
                     <action varName="Search_Now" operator="SET_TO_NO"/>
-                    <action varName="Location_Preference" operator="SET_TO_BLANK"/>
                     <action varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                    <action varName="Segment_Preference" operator="SET_TO_BLANK"/>
                     <getUserInput>
                         <input>
                             <grammar>
@@ -410,7 +410,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                 </output>
                 <output id="output_2459375">
                     <prompt selectionType="RANDOM">
-                        <item>This is fun, but wouldn't you like to look up some music?</item>
+                        <item>This is fun, but wouldn't you like to look up some events?</item>
                     </prompt>
                     <getUserInput id="getUserInput_2459376">
                         <input>
@@ -468,7 +468,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                         </grammar>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>Jazz, Rock, Metal, Rap, Hip Hop, Blues, Dance, Electronic, Techno, Dub Step, etc</item>
+                                <item>Performance, adventure, animated, sport event, crime, documentary, drama, family, fantasy, foreign, historical, film, music, mystery, music, science fiction, TV event, thriller, war events and western.</item>
                             </prompt>
                             <goto ref="getUserInput_2531765"/>
                         </output>
@@ -526,7 +526,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     <input>
                         <grammar>
                             <item>unsupported genres</item>
-                            <item>$ (UNSUPPORTED_GENRES)={Topic}</item>
+                            <item>$ (UNSUPPORTED_SEGMENTS)={Topic}</item>
                         </grammar>
                         <action varName="Topic" operator="SET_TO">{Topic.value:main}</action>
                         <input>
@@ -542,7 +542,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                             </prompt>
                             <output id="output_2510164">
                                 <prompt selectionType="RANDOM">
-                                    <item>I'm afraid {Topic} isn't a music genre I know. Please try another one.</item>
+                                    <item>I'm afraid {Topic} isn't an event I know. Please try another one.</item>
                                 </prompt>
                                 <goto ref="getUserInput_2531765"/>
                             </output>
@@ -550,10 +550,10 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     </input>
                     <input>
                         <grammar>
-                            <item>Genres</item>
-                            <item>$ (GENRE)={Genre_Preference}</item>
+                            <item>Segments</item>
+                            <item>$ (SEGMENT)={Segment_Preference}</item>
                         </grammar>
-                        <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                        <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                         <goto ref="search_2414740"/>
                     </input>
                     <input>
@@ -569,7 +569,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                             <cond varName="Out-of-Scope_Count" operator="GREATER_THEN">2</cond>
                             <output>
                                 <prompt selectionType="RANDOM">
-                                    <item>I'm sorry I don't know about that. Can I look up some music for you?</item>
+                                    <item>I'm sorry I don't know about that. Can I look up some events for you?</item>
                                 </prompt>
                                 <getUserInput>
                                     <input>
@@ -613,7 +613,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                             </prompt>
                             <output id="output_2497989">
                                 <prompt selectionType="RANDOM">
-                                    <item>I'm afraid I don't know much about {Topic}. Just music.</item>
+                                    <item>I'm afraid I don't know much about {Topic}. Just events.</item>
                                 </prompt>
                                 <goto ref="getUserInput_2531765"/>
                             </output>
@@ -621,7 +621,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     </input>
                     <output>
                         <prompt selectionType="RANDOM">
-                            <item>I can look up current and upcoming music by Events or Location and show you covers. But I'm afraid I cannot search by number of stars or by music titles or musicians at this time.</item>
+                            <item>I can look up current and upcoming events by Segment or MPAA Rating and show you trailers for them. But I'm afraid I cannot search by number of stars or by event titles or actor and director names at this time.</item>
                         </prompt>
                         <goto ref="getUserInput_2531765"/>
                     </output>
@@ -633,7 +633,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                 <input>
                     <grammar>
                         <item>unsupported genres</item>
-                        <item>$ (UNSUPPORTED_GENRES)={Topic}</item>
+                        <item>$ (UNSUPPORTED_SEGMENTS)={Topic}</item>
                     </grammar>
                     <action varName="Topic" operator="SET_TO">{Topic.value:main}</action>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
@@ -671,7 +671,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <output>
                         <prompt selectionType="RANDOM">
-                            <item>Wouldn't you rather find a music?</item>
+                            <item>Wouldn't you rather find a event?</item>
                         </prompt>
                         <goto ref="getUserInput_2459376"/>
                     </output>
@@ -684,7 +684,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <output>
                         <prompt selectionType="RANDOM">
-                            <item>This must be frustlocation.</item>
+                            <item>This must be frustrating.</item>
                         </prompt>
                         <goto ref="getUserInput_2459376"/>
                     </output>
@@ -714,47 +714,47 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                 <action varName="Small_Talk_Count" operator="SET_TO">0</action>
                 <action varName="Greeting_Count" operator="SET_TO">0</action>
                 <input isAutoLearnCandidate="true"
-                    isRelatedNodeCandidate="true" comment="LookupActors *&#xa;I want to search for actors&#xa;I want to find music actors&#xa;search music by actor&#xa;i'm interested in actors&#xa;search for cast members&#xa;$ look up actors&#xa;$ look up an actor&#xa;$ lookup actors&#xa;$ lookup actor&#xa;$ search for actors&#xa;$ search by actor&#xa;$ find actors&#xa;$ find an actor&#xa;$ looking for an actor&#xa;$ interested in actors&#xa;$ look up cast&#xa;$ look up cast members&#xa;$ serach for cast&#xa;$ search for cast members&#xa;$ find cast&#xa;$ find cast members">
+                    isRelatedNodeCandidate="true" comment="LookupActors *&#xa;I want to search for actors&#xa;I want to find event actors&#xa;search events by actor&#xa;i'm interested in actors&#xa;search for cast members&#xa;$ look up actors&#xa;$ look up an actor&#xa;$ lookup actors&#xa;$ lookup actor&#xa;$ search for actors&#xa;$ search by actor&#xa;$ find actors&#xa;$ find an actor&#xa;$ looking for an actor&#xa;$ interested in actors&#xa;$ look up cast&#xa;$ look up cast members&#xa;$ serach for cast&#xa;$ search for cast members&#xa;$ find cast&#xa;$ find cast members">
                     <grammar>
                         <item>LookupActors</item>
-                        <item>I want to look up musician</item>
-                        <item>look up musician</item>
+                        <item>I want to look up actors</item>
+                        <item>look up actors</item>
                         <item>* LookupActors</item>
                     </grammar>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <output>
                         <prompt selectionType="RANDOM">
-                            <item>I'm afraid I can't look up musicians.</item>
+                            <item>I'm afraid I can't look up cast members.</item>
                         </prompt>
                         <goto ref="getUserInput_2531765"/>
                     </output>
                 </input>
                 <input isAutoLearnCandidate="true"
-                    isRelatedNodeCandidate="true" comment="LookupDirectors *&#xa;I want to search for directors&#xa;search for directors&#xa;I'm interested in directors&#xa;I want to find a director&#xa;search music by director&#xa;$ look up directors&#xa;$ look up director&#xa;$ lookup directors&#xa;$ lookup director&#xa;$ search for directors&#xa;$ search by director&#xa;$ find directors&#xa;$ find a director&#xa;$ looking for a director&#xa;$ interested in directors">
+                    isRelatedNodeCandidate="true" comment="LookupDirectors *&#xa;I want to search for directors&#xa;search for directors&#xa;I'm interested in directors&#xa;I want to find a director&#xa;search events by director&#xa;$ look up directors&#xa;$ look up director&#xa;$ lookup directors&#xa;$ lookup director&#xa;$ search for directors&#xa;$ search by director&#xa;$ find directors&#xa;$ find a director&#xa;$ looking for a director&#xa;$ interested in directors">
                     <grammar>
                         <item>LookupDirectors</item>
-                        <item>I want to look up musician</item>
-                        <item>look up musician</item>
+                        <item>I want to look up directors</item>
+                        <item>look up directors</item>
                         <item>* LookupDirectors</item>
                     </grammar>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <output>
                         <prompt selectionType="RANDOM">
-                            <item>I'm afraid I can't look up musicians.</item>
+                            <item>I'm afraid I can't look up directors.</item>
                         </prompt>
                         <goto ref="getUserInput_2531765"/>
                     </output>
                 </input>
                 <input isAutoLearnCandidate="true"
-                    isRelatedNodeCandidate="true" comment="CheckShowtimes *&#xa;I want to find music near me&#xa;I want to look up showtimes&#xa;search for showtimes&#xa;find music times&#xa;find music in my area&#xa;look up showtimes&#xa;$ music near me&#xa;$ music by me&#xa;$ in my area&#xa;$ what theaters&#xa;$ where is * playing&#xa;$ where is * showing&#xa;$ search for showtimes&#xa;$ look up showtimes&#xa;$ look for showtimes&#xa;$ I want to find showtimes&#xa;$ find out showtimes&#xa;$ find music times&#xa;$ search for music times&#xa;$ look up music times&#xa;$ look for music times&#xa;$ I want to find music times&#xa;$ find out music times&#xa;$ find music times&#xa;$ when it is playing&#xa;$ when it is showing&#xa;$ what time it is playing&#xa;$ what time it is showing">
+                    isRelatedNodeCandidate="true" comment="CheckShowtimes *&#xa;I want to find events near me&#xa;I want to look up showtimes&#xa;search for showtimes&#xa;find event times&#xa;find events in my area&#xa;look up showtimes&#xa;$ events near me&#xa;$ events by me&#xa;$ in my area&#xa;$ what theaters&#xa;$ where is * playing&#xa;$ where is * showing&#xa;$ search for showtimes&#xa;$ look up showtimes&#xa;$ look for showtimes&#xa;$ I want to find showtimes&#xa;$ find out showtimes&#xa;$ find event times&#xa;$ search for event times&#xa;$ look up event times&#xa;$ look for event times&#xa;$ I want to find event times&#xa;$ find out event times&#xa;$ find event times&#xa;$ when it is playing&#xa;$ when it is showing&#xa;$ what time it is playing&#xa;$ what time it is showing">
                     <grammar>
                         <item>CheckShowtimes</item>
-                        <item>I want to check event times</item>
+                        <item>I want to check showtimes</item>
                         <item>check showtimes</item>
                         <item>$ (ZIPCODE)={ZIP_Code_Preference}</item>
                         <item>* CheckShowtimes</item>
                     </grammar>
-                    <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                    <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                     <action varName="Greeting_Count" operator="SET_TO">0</action>
                     <action varName="Small_Talk_Count" operator="SET_TO">0</action>
                     <action varName="Node_Class" operator="SET_TO">showtimes</action>
@@ -792,7 +792,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                                     </grammar>
                                     <output>
                                     <prompt>
-                                    <item>I&amp;apos;m afraid I can only use ZIP codes or locations to find music.</item>
+                                    <item>I&amp;apos;m afraid I can only use ZIP codes to find events.</item>
                                     </prompt>
                                     <getUserInput>
                                     <input>
@@ -821,7 +821,7 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                     </if>
                     <output id="output_2503344">
                         <prompt selectionType="RANDOM">
-                            <item>Sorry, I do not support this.</item>
+                            <item>Okay. &lt;a target="_blank" href="http://www.fandango.com/{ZIP_Code_Preference}_eventtimes?q={ZIP_Code_Preference}"&gt;Click here&lt;/a&gt; to get show times for the {ZIP_Code_Preference} area.</item>
                         </prompt>
                         <getUserInput>
                             <input>
@@ -846,30 +846,29 @@ Line={Class1_Confidence}+{Class2_Confidence};</script>
                 </input>
                 <input isAutoLearnCandidate="true"
                     isRelatedNodeCandidate="true"
-                    comment="SearchMusic *&#xa;$ (RECENCY)={Recency_Preference}&#xa;$ (GENRE)={Genre_Preference}&#xa;$ (LOCATION)={Location_Preference}&#xa;look up music&#xa;what's playing&#xa;I want to watch a music&#xa;I want to find a music to see&#xa;what's in theaters&#xa;$ search for music&#xa;$ search for a music&#xa;$ I want to see a music&#xa;$ I want to see something&#xa;$ look up music&#xa;$ look up a music&#xa;$ look for music&#xa;$ look for a music&#xa;$ I want to find music&#xa;$ I want find a music&#xa;$ planning to go see&#xa;$ planning to go to the music&#xa;$ going out to see a music&#xa;$ planning to see a music&#xa;$ want to go see a music performance&#xa;$ thinking of seeing a concert&#xa;$ thinking we want to see a show" id="input_2443892">
+                    comment="SearchEvents *&#xa;$ (RECENCY)={Recency_Preference}&#xa;$ (SEGMENT)={Segment_Preference}&#xa;$ (GENRE)={Genre_Preference}&#xa;look up events&#xa;what's playing&#xa;I want to watch a event&#xa;I want to find a event to see&#xa;what's in theaters&#xa;$ search for events&#xa;$ search for a event&#xa;$ I want to see a event&#xa;$ I want to see something&#xa;$ look up events&#xa;$ look up a event&#xa;$ look for events&#xa;$ look for a event&#xa;$ I want to find events&#xa;$ I want find a event&#xa;$ planning to go see&#xa;$ planning to go to the events&#xa;$ going out to see a event&#xa;$ planning to see a event&#xa;$ want to go see a event&#xa;$ thinking of seeing a event&#xa;$ thinking we want to see a event" id="input_2443892">
                     <grammar>
-                        <item>SearchMusic</item>
-                        <item>I want to search for music</item>
-                        <item>search for music</item>
-                        <item>search for music events</item>
-                        <item>* SearchMusic</item>
+                        <item>SearchEvents</item>
+                        <item>I want to search for events</item>
+                        <item>search for events</item>
+                        <item>* SearchEvents</item>
                     </grammar>
-                    <action varName="Topic" operator="SET_TO">music</action>
+                    <action varName="Topic" operator="SET_TO">events</action>
                     <action varName="Greeting_Count" operator="SET_TO">0</action>
                     <action varName="Small_Talk_Count" operator="SET_TO">0</action>
                     <action varName="Current_Index" operator="SET_TO">0</action>
                     <action varName="Page" operator="SET_TO">new</action>
+                    <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                     <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
-                    <action varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
                     <action varName="Recency_Preference" operator="SET_TO">{Recency_Preference.value:main}</action>
-                    <action varName="Node_Class" operator="SET_TO">music</action>
+                    <action varName="Node_Class" operator="SET_TO">events</action>
                     <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                     <input id="input_2503411">
                         <grammar>
                             <item>Date/Time parent concept</item>
                             <item>$ (DATE_TIME_RANGE)={DateTime_Mentioned_ENT}</item>
                         </grammar>
-                        <action varName="Node_Class" operator="SET_TO">music</action>
+                        <action varName="Node_Class" operator="SET_TO">events</action>
                         <action varName="DateTime_Current" operator="SET_TO">&amp;lt;mct:getTime&amp;gt;America/Tijuana&amp;lt;/mct:getTime&amp;gt;</action>
                         <input>
                             <grammar>
@@ -913,19 +912,19 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                     </input>
                     <input id="input_2443775">
                         <grammar>
-                            <item>Location</item>
-                            <item>$(LOCATION)={Location_Preference}</item>
+                            <item>Genre</item>
+                            <item>$(GENRE)={Genre_Preference}</item>
                         </grammar>
-                        <action varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
-                        <action varName="Node_Class" operator="SET_TO">music</action>
+                        <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                        <action varName="Node_Class" operator="SET_TO">events</action>
                         <goto ref="input_2510382"/>
                     </input>
                     <input id="input_2510382">
                         <grammar>
-                            <item>Genre</item>
-                            <item>$ (GENRE)={Genre_Preference}</item>
+                            <item>Segment</item>
+                            <item>$ (SEGMENT)={Segment_Preference}</item>
                         </grammar>
-                        <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                        <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                         <goto ref="input_2503399"/>
                     </input>
                     <input id="input_2503399">
@@ -936,8 +935,8 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                             <item>$ child</item>
                             <item>$ kid</item>
                         </grammar>
-                        <action varName="Location_Preference" operator="SET_TO">G</action>
-                        <action varName="Node_Class" operator="SET_TO">music</action>
+                        <action varName="Genre_Preference" operator="SET_TO">G</action>
+                        <action varName="Node_Class" operator="SET_TO">events</action>
                         <goto ref="input_2443841"/>
                     </input>
                     <input id="input_2443841">
@@ -945,7 +944,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                             <item>Recency</item>
                             <item>$ (RECENCY)={Recency_Preference}</item>
                         </grammar>
-                        <action varName="Node_Class" operator="SET_TO">music</action>
+                        <action varName="Node_Class" operator="SET_TO">events</action>
                         <action varName="Recency_Preference" operator="SET_TO">{Recency_Preference.value:main}</action>
                         <goto ref="input_2459178"/>
                     </input>
@@ -967,14 +966,14 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                             <getUserInput id="getUserInput_2449875">
                                 <input>
                                     <grammar>
-                                    <item>Genre or Location</item>
-                                    <item>$ (GENRE)={Genre_Preference} </item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
+                                    <item>Segment or Rating</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} </item>
+                                    <item>$ (GENRE)={Genre_Preference}</item>
                                     </grammar>
-                                    <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <action varName="Page" operator="SET_TO">new</action>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <goto ref="input_2503411"/>
                                 </input>
                                 <input>
@@ -1041,7 +1040,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Sorry, I need to look up current and upcoming music separately.</item>
+                                    <item>Sorry, I need to look up current and upcoming events separately.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2449875"/>
                                     </output>
@@ -1067,21 +1066,20 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         </output>
                     </if>
                     <if id="profileCheck_2449894">
-                        <cond varName="Genre_Preference" operator="IS_BLANK"/>
+                        <cond varName="Segment_Preference" operator="IS_BLANK"/>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>Are you in the mood for a specific genre?</item>
+                                <item>Are you in the mood for a specific segment?</item>
                             </prompt>
                             <if>
                                 <cond varName="First_Time" operator="EQUAL_TO_YES"/>
                                 <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Jazz&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Rock&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Pop&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Electro&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;House&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;No Preference&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;</item>
+                                    <item>&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Sport events&lt;/mct:input&gt;&lt;/b&gt;&lt;br&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Music&lt;/mct:input&gt;&lt;/b&gt;, baby!&lt;br&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Film&lt;/mct:input&gt;&lt;/b&gt;, Animation, Family, Foreign, etc.&lt;br&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Arts and Theatre&lt;/mct:input&gt;&lt;/b&gt;, Classical, Symphonic, Variety, Dance&lt;br&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Performance&lt;/mct:input&gt;&lt;/b&gt;! I love a good chase scene.&lt;br&gt;&lt;/mct:link&gt;</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443778"/>
                                 </output>
@@ -1090,7 +1088,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                 <input>
                                     <grammar>
                                     <item>Unsupported genres</item>
-                                    <item>$ (UNSUPPORTED_GENRES)={Topic}</item>
+                                    <item>$ (UNSUPPORTED_SEGMENTS)={Topic}</item>
                                     </grammar>
                                     <action varName="Topic" operator="SET_TO">{Topic.value:main}</action>
                                     <output>
@@ -1137,7 +1135,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output id="output_2458051">
                                     <prompt selectionType="RANDOM">
-                                    <item>Jazz, Rock, Rap, Hip Hop, House, Electro, Blues, Trance, Techno and others.</item>
+                                    <item>Sport and sport events, arts and theater, music.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443778"/>
                                     </output>
@@ -1152,7 +1150,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Well, Electro is my favorite genre.</item>
+                                    <item>Well, Science Fiction is my favorite genre.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443778"/>
                                     </output>
@@ -1161,23 +1159,37 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                 </input>
                                 <input>
                                     <grammar>
-                                    <item>Genre and location</item>
-                                    <item>$ (GENRE)={Genre_Preference} (LOCATION)={Location_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference} (GENRE)={Genre_Preference}</item>
+                                    <item>Segment and rating</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} (GENRE)={Genre_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference} (SEGMENT)={Segment_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <action varName="Search_Now" operator="SET_TO_NO"/>
-                                    <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
+                                    <if>
+                                    <cond varName="Segment_Preference" operator="EQUALS">Family</cond>
+                                    <goto ref="profileCheck_2449895">
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">G</action>
+                                    </goto>
+                                    </if>
                                     <goto ref="profileCheck_2449895"/>
                                 </input>
                                 <input>
                                     <grammar>
-                                    <item>Genre</item>
-                                    <item>$ (GENRE)={Genre_Preference}</item>
+                                    <item>Segment</item>
+                                    <item>$ (SEGMENT)={Segment_Preference}</item>
                                     </grammar>
-                                    <action varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <action varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <action varName="Search_Now" operator="SET_TO_NO"/>
+                                    <if>
+                                    <cond varName="Segment_Preference" operator="EQUALS">Family</cond>
+                                    <goto ref="profileCheck_2449895">
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">G</action>
+                                    </goto>
+                                    </if>
                                     <goto ref="profileCheck_2449895"/>
                                 </input>
                                 <input>
@@ -1201,10 +1213,10 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                 <input>
                                     <grammar>
                                     <item>Yes</item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <output>
                                     <prompt selectionType="RANDOM">
                                     <item>Which genre?</item>
@@ -1217,19 +1229,19 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         </output>
                     </if>
                     <if id="profileCheck_2449895">
-                        <cond varName="Location_Preference" operator="IS_BLANK"/>
+                        <cond varName="Genre_Preference" operator="IS_BLANK"/>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>Do you prefer a certain event location? </item>
+                                <item>Do you prefer a certain type? </item>
                             </prompt>
                             <if>
                                 <cond varName="First_Time" operator="EQUAL_TO_YES"/>
                                 <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Hollywood&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;San Francisco&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;New York&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
-&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Boston&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
+                                    <item>&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Electronic&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Rock&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Jazz&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
+&lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;Punk&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;
 &lt;mct:link&gt;&lt;b&gt;&lt;mct:input&gt;No Preference&lt;/mct:input&gt;&lt;/b&gt;&lt;/mct:link&gt;</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443780"/>
@@ -1238,11 +1250,11 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                             <getUserInput id="getUserInput_2443780">
                                 <input>
                                     <grammar>
-                                    <item>What locations do you know?</item>
-                                    <item>$ what locations do you know</item>
-                                    <item>$ what locations are there</item>
-                                    <item>$ what locations exist</item>
-                                    <item>$ what locations do you have</item>
+                                    <item>What ratings do you know?</item>
+                                    <item>$ what ratings do you know</item>
+                                    <item>$ what ratings are there</item>
+                                    <item>$ what ratings exist</item>
+                                    <item>$ what ratings do you have</item>
                                     </grammar>
                                     <goto ref="output_2458042"/>
                                 </input>
@@ -1256,20 +1268,20 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <input>
                                     <grammar>
-                                    <item>locations</item>
+                                    <item>ratings</item>
                                     <item>$ they</item>
                                     <item>$ ones</item>
                                     <item>$ choices</item>
                                     <item>$ choice</item>
                                     <item>$ options</item>
-                                    <item>$ locations</item>
-                                    <item>$ locations</item>
+                                    <item>$ ratings</item>
+                                    <item>$ genres</item>
                                     <item>$ what else</item>
                                     <item>$ available</item>
                                     </grammar>
                                     <output id="output_2458042">
                                     <prompt selectionType="RANDOM">
-                                    <item>Hollywood, San Francisco, New York, Boston</item>
+                                    <item>G, Rock, Jazz, R or NR.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443780"/>
                                     </output>
@@ -1278,15 +1290,28 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                 </input>
                                 <input>
                                     <grammar>
-                                    <item>Location</item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
+                                    <item>Rating</item>
+                                    <item>$ (GENRE)={Genre_Preference}</item>
                                     </grammar>
                                     <action varName="Current_Index" operator="SET_TO">0</action>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <action varName="Page" operator="SET_TO">new</action>
                                     <action varName="Search_Now" operator="SET_TO_NO"/>
                                     <goto ref="output_2456875"/>
+                                </input>
+                                <input>
+                                    <grammar>
+                                    <item>NC-17</item>
+                                    <item>$ NC-17</item>
+                                    <item>$ adult</item>
+                                    </grammar>
+                                    <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>I&amp;apos;m afraid I cannot look up NC-17-rated events.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2443780"/>
+                                    </output>
                                 </input>
                                 <input>
                                     <grammar>
@@ -1314,7 +1339,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Which location?</item>
+                                    <item>Which rating?</item>
                                     </prompt>
                                     <goto ref="getUserInput_2443780"/>
                                     </output>
@@ -1329,7 +1354,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         </prompt>
                         <output id="output_2456876">
                             <prompt selectionType="RANDOM">
-                                <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Location:"{Location_Preference}", Genre:"{Genre_Preference}", Index:"{Current_Index}", Page:"{Page}"}"</item>
+                                <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Rating:"{Genre_Preference}", Segment:"{Segment_Preference}", Index:"{Current_Index}", Page:"{Page}"}"</item>
                             </prompt>
                             <action varName="Last_Results" operator="SET_TO_NO"/>
                             <action varName="First_Results" operator="SET_TO_NO"/>
@@ -1338,13 +1363,13 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                             <getUserInput>
                                 <input>
                                     <grammar>
-                                    <item>UPDATE NUM_MUSICS</item>
+                                    <item>UPDATE NUM_EVENTS</item>
                                     </grammar>
                                     <if>
-                                    <cond varName="Num_Music" operator="EQUALS">0</cond>
+                                    <cond varName="Num_Events" operator="EQUALS">0</cond>
                                     <output id="output_2460234">
                                     <prompt selectionType="RANDOM">
-                                    <item>I'm afraid I found {Num_Music} {Recency_Preference} music matching {Location_Preference} {Genre_Preference}. Try changing your criteria.</item>
+                                    <item>I'm afraid I found {Num_Events} {Recency_Preference} events matching {Genre_Preference} {Segment_Preference}. Try changing your criteria.</item>
                                     </prompt>
                                     <getUserInput>
                                     <input>
@@ -1352,9 +1377,9 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>Okay</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
-                                    <action
                                     varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    <action
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <action
                                     varName="Recency_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="profileCheck_2449907"/>
@@ -1365,40 +1390,40 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </if>
                                     <if>
                                     <cond
-                                    varName="Location_Preference" operator="HAS_VALUE"/>
-                                    <cond varName="Genre_Preference" operator="IS_BLANK"/>
+                                    varName="Genre_Preference" operator="HAS_VALUE"/>
+                                    <cond varName="Segment_Preference" operator="IS_BLANK"/>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Fine choice, {User_Name}! I found {Num_Music} results for {Recency_Preference} {Location_Preference}-rated music.</item>
+                                    <item>Fine choice, {User_Name}! I found {Num_Events} results for {Recency_Preference} {Genre_Preference}-rated events.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
                                     </if>
                                     <if>
                                     <cond
-                                    varName="Location_Preference" operator="IS_BLANK"/>
-                                    <cond varName="Genre_Preference" operator="HAS_VALUE"/>
+                                    varName="Genre_Preference" operator="IS_BLANK"/>
+                                    <cond varName="Segment_Preference" operator="HAS_VALUE"/>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Nice choice, {User_Name}! I found {Num_Music} results for {Recency_Preference} {Genre_Preference} music.</item>
+                                    <item>Nice choice, {User_Name}! I found {Num_Events} results for {Recency_Preference} {Segment_Preference} events.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
                                     </if>
                                     <if>
-                                    <cond varName="Genre_Preference" operator="IS_BLANK"/>
+                                    <cond varName="Segment_Preference" operator="IS_BLANK"/>
                                     <cond
-                                    varName="Location_Preference" operator="IS_BLANK"/>
+                                    varName="Genre_Preference" operator="IS_BLANK"/>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>I found {Num_Music} results for ALL {Recency_Preference} music.</item>
+                                    <item>I found {Num_Events} results for ALL {Recency_Preference} events.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
                                     </if>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Good choices, {User_Name}! I found {Num_Music} results for {Recency_Preference} {Location_Preference}-rated {Genre_Preference} music.</item>
+                                    <item>Good choices, {User_Name}! I found {Num_Events} results for {Recency_Preference} {Genre_Preference}-rated {Segment_Preference} events.</item>
                                     </prompt>
                                     <getUserInput id="getUserInput_2456877">
                                     <input id="input_2456878">
@@ -1430,9 +1455,9 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>Yes</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
-                                    <action
                                     varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    <action
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <action
                                     varName="Recency_Preference" operator="SET_TO_BLANK"/>
                                     <action
@@ -1464,13 +1489,13 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>$ what do you mean</item>
                                     <item>$ what does that mean</item>
                                     <item>$ what did you mean</item>
-                                    <item>$ what were those music again</item>
+                                    <item>$ what were those events again</item>
                                     <item>$ what did you mean</item>
                                     <item>$ what are those</item>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>These are the {Recency_Preference} music. Go ahead and click one!</item>
+                                    <item>These are the {Recency_Preference} events. Go ahead and click one!</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
@@ -1491,7 +1516,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output id="output_2459418">
                                     <prompt selectionType="RANDOM">
-                                    <item>Oh. You mean music in your area. I must direct you to Fandango for that. Would you like the link?</item>
+                                    <item>Oh. You mean events in your area. I must direct you to Fandango for that. Would you like the link?</item>
                                     </prompt>
                                     <getUserInput>
                                     <input>
@@ -1526,33 +1551,33 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     varName="Popularity_Score" operator="HAS_VALUE"/>
                                     <input>
                                     <grammar>
-                                    <item>What are the locations?</item>
-                                    <item>$ locations for it</item>
-                                    <item>$ locations does it get</item>
-                                    <item>$ locations it gets</item>
-                                    <item>$ locations it got</item>
-                                    <item>$ locations it received</item>
-                                    <item>$ its locations</item>
+                                    <item>What are the ratings?</item>
+                                    <item>$ ratings for it</item>
+                                    <item>$ ratings does it get</item>
+                                    <item>$ ratings it gets</item>
+                                    <item>$ ratings it got</item>
+                                    <item>$ ratings it received</item>
+                                    <item>$ its ratings</item>
                                     <item>$ how many * stars</item>
                                     <item>why</item>
                                     <item>why not</item>
                                     <item>why do you say that</item>
-                                    <item>$ how are the locations</item>
-                                    <item>$ what are the locations like</item>
+                                    <item>$ how are the ratings</item>
+                                    <item>$ what are the ratings like</item>
                                     </grammar>
                                     <if>
                                     <cond
                                     varName="Popularity_Score" operator="LESS_THEN">0</cond>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>I'm afraid no one has rated {Selected_Music} yet.</item>
+                                    <item>I'm afraid no one has rated {Selected_Event} yet.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2503113"/>
                                     </output>
                                     </if>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>{Selected_Music} gets {Popularity_Score} stars from users.</item>
+                                    <item>{Selected_Event} gets {Popularity_Score} stars from users.</item>
                                     </prompt>
                                     <getUserInput id="getUserInput_2503113">
                                     <input>
@@ -1576,7 +1601,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>There should be a short description of {Selected_Music} to the right.</item>
+                                    <item>There should be a short description of {Selected_Event} to the right.</item>
                                     </prompt>
                                     <getUserInput>
                                     <input>
@@ -1604,7 +1629,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Click on an event above to find a brief description.</item>
+                                    <item>Click on a event above to find a brief description.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
@@ -1641,7 +1666,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </input>
                                     <if id="profileCheck_2459411">
                                     <cond
-                                    varName="Current_Index" operator="LESS_THEN">{Num_Music}</cond>
+                                    varName="Current_Index" operator="LESS_THEN">{Num_Events}</cond>
                                     <output>
                                     <prompt selectionType="RANDOM">
                                     <item>No. Say &lt;i&gt;show me more&lt;/i&gt; if you want to see more.</item>
@@ -1668,9 +1693,9 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>Okay.</item>
                                     </prompt>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
-                                    <action
                                     varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    <action
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <action
                                     varName="Recency_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="profileCheck_2449907"/>
@@ -1680,8 +1705,8 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <grammar>
                                     <item>single_parameter</item>
                                     <item>(RECENCY)={Recency_Preference}</item>
+                                    <item>(SEGMENT)={Segment_Preference}</item>
                                     <item>(GENRE)={Genre_Preference}</item>
-                                    <item>(LOCATION)={Location_Preference}</item>
                                     </grammar>
                                     <output>
                                     <prompt selectionType="RANDOM">
@@ -1723,8 +1748,8 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <input id="input_2460509">
                                     <grammar>
                                     <item>Remove genre</item>
-                                    <item>$ remove (GENRE)={Genre_Preference}</item>
-                                    <item>$ cancel (GENRE)={Genre_Preference}</item>
+                                    <item>$ remove (SEGMENT)={Segment_Preference}</item>
+                                    <item>$ cancel (SEGMENT)={Segment_Preference}</item>
                                     <item>$ remove genre</item>
                                     <item>$ cancel genre</item>
                                     <item>$ any genre</item>
@@ -1734,38 +1759,38 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action varName="Page" operator="SET_TO">new</action>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Remove location</item>
-                                    <item>$ remove (LOCATION)={Location_Preference}</item>
-                                    <item>$ cancel (LOCATION)={Location_Preference}</item>
-                                    <item>$ remove location</item>
-                                    <item>$ cancel location</item>
-                                    <item>$ all locations</item>
-                                    <item>$ all location</item>
-                                    <item>$ any locations</item>
-                                    <item>$ any location</item>
+                                    <item>Remove rating</item>
+                                    <item>$ remove (GENRE)={Genre_Preference}</item>
+                                    <item>$ cancel (GENRE)={Genre_Preference}</item>
+                                    <item>$ remove rating</item>
+                                    <item>$ cancel rating</item>
+                                    <item>$ all ratings</item>
+                                    <item>$ all rating</item>
+                                    <item>$ any ratings</item>
+                                    <item>$ any rating</item>
                                     </grammar>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
+                                    varName="Genre_Preference" operator="SET_TO_BLANK"/>
                                     <action varName="Page" operator="SET_TO">new</action>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>all music</item>
-                                    <item>$ all music</item>
+                                    <item>all events</item>
+                                    <item>$ all events</item>
                                     <item>$ all results</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
-                                    <action
                                     varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    <action
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action varName="Page" operator="SET_TO">new</action>
@@ -1786,11 +1811,11 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Recency and Genre</item>
-                                    <item>$ (RECENCY)={Recency_Preference} (GENRE)={Genre_Preference}</item>
-                                    <item>$ (GENRE)={Genre_Preference} (RECENCY)={Recency_Preference}</item>
-                                    <item>$ (RECENCY)={Recency_Preference} * (GENRE)={Genre_Preference}</item>
-                                    <item>$ (GENRE)={Genre_Preference} * (RECENCY)={Recency_Preference}</item>
+                                    <item>Recency and Segment</item>
+                                    <item>$ (RECENCY)={Recency_Preference} (SEGMENT)={Segment_Preference}</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} (RECENCY)={Recency_Preference}</item>
+                                    <item>$ (RECENCY)={Recency_Preference} * (SEGMENT)={Segment_Preference}</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} * (RECENCY)={Recency_Preference}</item>
                                     </grammar>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
@@ -1798,36 +1823,36 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <action
                                     varName="Recency_Preference" operator="SET_TO">{Recency_Preference.value:main}</action>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <input>
                                     <grammar>
-                                    <item>location</item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
+                                    <item>rating</item>
+                                    <item>$ (GENRE)={Genre_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <goto ref="profileCheck_2510320"/>
                                     </input>
                                     <if id="profileCheck_2510320">
                                     <cond
-                                    varName="Genre_Preference" operator="EQUALS">Family</cond>
+                                    varName="Segment_Preference" operator="EQUALS">Family</cond>
                                     <goto ref="output_2456875">
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">G</action>
+                                    varName="Genre_Preference" operator="SET_TO">G</action>
                                     </goto>
                                     </if>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Recency and Location</item>
-                                    <item>$ (RECENCY)={Recency_Preference} (LOCATION)={Location_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference} (RECENCY)={Recency_Preference}</item>
-                                    <item>$ (RECENCY)={Recency_Preference} * (LOCATION)={Location_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference} * (RECENCY)={Recency_Preference}</item>
+                                    <item>Recency and Rating</item>
+                                    <item>$ (RECENCY)={Recency_Preference} (GENRE)={Genre_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference} (RECENCY)={Recency_Preference}</item>
+                                    <item>$ (RECENCY)={Recency_Preference} * (GENRE)={Genre_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference} * (RECENCY)={Recency_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action varName="Page" operator="SET_TO">new</action>
@@ -1836,27 +1861,27 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <input>
                                     <grammar>
                                     <item>genre</item>
-                                    <item>$ (GENRE)={Genre_Preference}</item>
+                                    <item>$ (SEGMENT)={Segment_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <goto ref="goTo_2503053"/>
                                     </input>
                                     <goto id="goTo_2503053" ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Genre and Location</item>
-                                    <item>$ (GENRE)={Genre_Preference} (LOCATION)={Location_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference} (GENRE)={Genre_Preference}</item>
-                                    <item>$ (GENRE)={Genre_Preference} * (LOCATION)={Location_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference} * (GENRE)={Genre_Preference}</item>
+                                    <item>Segment and Rating</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} (GENRE)={Genre_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference} (SEGMENT)={Segment_Preference}</item>
+                                    <item>$ (SEGMENT)={Segment_Preference} * (GENRE)={Genre_Preference}</item>
+                                    <item>$ (GENRE)={Genre_Preference} * (SEGMENT)={Segment_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <action varName="Page" operator="SET_TO">new</action>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <input>
@@ -1888,21 +1913,21 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>$ any</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
-                                    <action
                                     varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    <action
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Genre</item>
-                                    <item>$ (GENRE)={Genre_Preference}</item>
+                                    <item>Segment</item>
+                                    <item>$ (SEGMENT)={Segment_Preference}</item>
                                     <item>$ genre</item>
                                     </grammar>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    varName="Segment_Preference" operator="SET_TO">{Segment_Preference.value:main}</action>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action varName="Page" operator="SET_TO">new</action>
@@ -1913,26 +1938,26 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>$ just</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO_BLANK"/>
+                                    varName="Genre_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <if>
                                     <cond
-                                    varName="Genre_Preference" operator="EQUALS">Family</cond>
+                                    varName="Segment_Preference" operator="EQUALS">Family</cond>
                                     <goto ref="output_2456875">
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">G</action>
+                                    varName="Genre_Preference" operator="SET_TO">G</action>
                                     </goto>
                                     </if>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>Location</item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
+                                    <item>Rating</item>
+                                    <item>$ (GENRE)={Genre_Preference}</item>
                                     </grammar>
                                     <action
-                                    varName="Location_Preference" operator="SET_TO">{Location_Preference.value:main}</action>
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
                                     <action
                                     varName="Current_Index" operator="SET_TO">0</action>
                                     <action varName="Page" operator="SET_TO">new</action>
@@ -1943,7 +1968,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <item>$ any</item>
                                     </grammar>
                                     <action
-                                    varName="Genre_Preference" operator="SET_TO_BLANK"/>
+                                    varName="Segment_Preference" operator="SET_TO_BLANK"/>
                                     <goto ref="output_2456875"/>
                                     </input>
                                     <goto ref="output_2456875"/>
@@ -1965,12 +1990,12 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </input>
                                     <input>
                                     <grammar>
-                                    <item>$ (UNSUPPORTED_GENRES)={Topic}</item>
+                                    <item>$ (UNSUPPORTED_SEGMENTS)={Topic}</item>
                                     </grammar>
                                     <action varName="Topic" operator="SET_TO">{Topic.value:main}</action>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>I'm afraid {Topic} isn't a music genre I know. Please try another one.</item>
+                                    <item>I'm afraid {Topic} isn't a event genre I know. Please try another one.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                     </output>
@@ -2049,7 +2074,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </prompt>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Location:"{Location_Preference}", Genre:"{Genre_Preference}", Index:"{Current_Index}", Page:"{Page}", Total_Music:"{Num_Music}", Total_Pages:"{Total_Pages}"}"</item>
+                                    <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Rating:"{Genre_Preference}", Segment:"{Segment_Preference}", Index:"{Current_Index}", Page:"{Page}", Total_Events:"{Num_Events}", Total_Pages:"{Total_Pages}"}"</item>
                                     </prompt>
                                     <action
                                     varName="First_Results" operator="SET_TO_NO"/>
@@ -2065,7 +2090,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <if>
 
                                     <cond
-                                    varName="Num_Music" operator="EQUALS">0</cond>
+                                    varName="Num_Events" operator="EQUALS">0</cond>
 
                                     <goto ref="output_2460234"/>
                                     </if>
@@ -2084,7 +2109,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <if>
 
                                     <cond
-                                    varName="Current_Index" operator="EQUALS">{Num_Music}</cond>
+                                    varName="Current_Index" operator="EQUALS">{Num_Events}</cond>
                                     <output>
                                     <prompt>
                                     <item>Here are the last results</item>
@@ -2104,28 +2129,13 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <if id="profileCheck_2503183">
 
                                     <cond
-                                    varName="Genre_Preference" operator="IS_BLANK"/>
-
-                                    <cond
-                                    varName="Location_Preference" operator="HAS_VALUE"/>
-                                    <output>
-                                    <prompt>
-                                    <item>for {Recency_Preference} {Location_Preference}-rated music.</item>
-                                    </prompt>
-
-                                    <goto ref="getUserInput_2456877"/>
-                                    </output>
-                                    </if>
-                                    <if>
-
-                                    <cond
-                                    varName="Location_Preference" operator="IS_BLANK"/>
+                                    varName="Segment_Preference" operator="IS_BLANK"/>
 
                                     <cond
                                     varName="Genre_Preference" operator="HAS_VALUE"/>
                                     <output>
                                     <prompt>
-                                    <item>for {Recency_Preference} {Genre_Preference} music.</item>
+                                    <item>for {Recency_Preference} {Genre_Preference}-rated events.</item>
                                     </prompt>
 
                                     <goto ref="getUserInput_2456877"/>
@@ -2134,13 +2144,28 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <if>
 
                                     <cond
-                                    varName="Location_Preference" operator="IS_BLANK"/>
+                                    varName="Genre_Preference" operator="IS_BLANK"/>
+
+                                    <cond
+                                    varName="Segment_Preference" operator="HAS_VALUE"/>
+                                    <output>
+                                    <prompt>
+                                    <item>for {Recency_Preference} {Segment_Preference} events.</item>
+                                    </prompt>
+
+                                    <goto ref="getUserInput_2456877"/>
+                                    </output>
+                                    </if>
+                                    <if>
 
                                     <cond
                                     varName="Genre_Preference" operator="IS_BLANK"/>
+
+                                    <cond
+                                    varName="Segment_Preference" operator="IS_BLANK"/>
                                     <output>
                                     <prompt>
-                                    <item>for ALL {Recency_Preference} music.</item>
+                                    <item>for ALL {Recency_Preference} events.</item>
                                     </prompt>
 
                                     <goto ref="getUserInput_2456877"/>
@@ -2148,7 +2173,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </if>
                                     <output>
                                     <prompt>
-                                    <item>for {Recency_Preference} {Location_Preference}-rated {Genre_Preference} music.</item>
+                                    <item>for {Recency_Preference} {Genre_Preference}-rated {Segment_Preference} events.</item>
                                     </prompt>
 
                                     <goto ref="getUserInput_2456877"/>
@@ -2175,7 +2200,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     </prompt>
                                     <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Location:"{Location_Preference}", Genre:"{Genre_Preference}", Index:"{Current_Index}", Page:"{Page}", Total_Music:"{Num_Music}", Total_Pages:"{Total_Pages}"}"</item>
+                                    <item>"{Search_Now:"{Search_Now}", Recency:"{Recency_Preference}", Rating:"{Genre_Preference}", Segment:"{Segment_Preference}", Index:"{Current_Index}", Page:"{Page}", Total_Events:"{Num_Events}", Total_Pages:"{Total_Pages}"}"</item>
                                     </prompt>
                                     <action
                                     varName="Last_Results" operator="SET_TO_NO"/>
@@ -2191,7 +2216,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                     <if>
 
                                     <cond
-                                    varName="Num_Music" operator="EQUALS">0</cond>
+                                    varName="Num_Events" operator="EQUALS">0</cond>
 
                                     <goto ref="output_2460234"/>
                                     </if>
@@ -2368,29 +2393,367 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         <grammar>
                             <item>genre</item>
                             <item>$ genre</item>
-                            <item>$ kind of music</item>
+                            <item>$ kind of event</item>
                         </grammar>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>Well, Jazz is probably my favorite genre!</item>
+                                <item>Well, Science Fiction is probably my favorite genre!</item>
                             </prompt>
                             <goto ref="getUserInput_2531765"/>
                         </output>
                     </input>
                     <input>
                         <grammar>
-                            <item>music</item>
-                            <item>$ music</item>
+                            <item>event</item>
+                            <item>$ event</item>
                         </grammar>
-                        <action varName="Topic" operator="SET_TO">music</action>
+                        <action varName="Topic" operator="SET_TO">event</action>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item> I guess I like music with a strong AI lead.</item>
+                                <item>Oh... 2001: A Space Odyssey... Terminator... The Matrix... I guess I like events with a strong AI lead.</item>
                             </prompt>
                             <goto ref="getUserInput_2531765"/>
                         </output>
                     </input>
                     <goto ref="default_2531544"/>
+                </input>
+                <input>
+                    <grammar>
+                        <item>What is 2001: A Space Odyssey about?</item>
+                        <item>$ what is 2001 about</item>
+                    </grammar>
+                    <if>
+                        <cond varName="Small_Talk_Count" operator="GREATER_THEN">2</cond>
+                        <goto ref="output_2459375"/>
+                    </if>
+                    <output id="output_2457907">
+                        <prompt selectionType="RANDOM">
+                            <item>It's about an intelligent computer, named HAL, who tries to kill the crew of a spaceship.</item>
+                        </prompt>
+                        <getUserInput id="getUserInput_2457908">
+                            <input>
+                                <grammar>
+                                    <item>Okay</item>
+                                    <item>haha</item>
+                                </grammar>
+                                <goto ref="output_2449884"/>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>Intelligent computer?</item>
+                                    <item>$ intelligent computer</item>
+                                    <item>$ named HAL</item>
+                                    <item>$ kill the crew</item>
+                                    <item>$ deactivate him</item>
+                                    <item>$ kill them first</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>Yes, that&amp;apos;s right.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457908"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>What do you mean</item>
+                                    <item>$ why</item>
+                                    <item>$ what do you mean</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>The human crew plans to deactivate him so HAL tries to kill them first.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457908"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>What does HAL stand for?</item>
+                                    <item>$ HAL stand for</item>
+                                    <item>$ HAL mean</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>&amp;quot;H-A-L&amp;quot; is derived from Heuristic ALgorithm according to the author, Arthur C. Clarke. But there is also an urban legend that it is a code name for IBM. Shift each letter back once and see what you get!</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457908"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>Does he succeed?</item>
+                                    <item>$ succeed</item>
+                                    <item>$ kill them</item>
+                                    <item>$ only tries</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>Well, I don&amp;apos;t want to spoil the surprise!</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457908"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>No, I mean</item>
+                                    <item>$ no i mean</item>
+                                    <item>$ no i meant</item>
+                                    <item>$ i mean</item>
+                                    <item>$ i meant</item>
+                                    <item>$ what about</item>
+                                    <item>$ how about</item>
+                                </grammar>
+                                <input>
+                                    <grammar>
+                                    <item>The Terminator</item>
+                                    <item>$ terminator</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457979"/>
+                                </input>
+                                <input>
+                                    <grammar>
+                                    <item>The Matrix</item>
+                                    <item>$ matrix</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457995"/>
+                                </input>
+                                <goto ref="search_2414738"/>
+                            </input>
+                            <goto ref="search_2414738"/>
+                        </getUserInput>
+                    </output>
+                </input>
+                <input>
+                    <grammar>
+                        <item>What is the Terminator about?</item>
+                        <item>$ what is the Terminator about</item>
+                        <item>$ what is Terminator about</item>
+                    </grammar>
+                    <if>
+                        <cond varName="Small_Talk_Count" operator="GREATER_THEN">2</cond>
+                        <goto ref="output_2459375"/>
+                    </if>
+                    <output id="output_2457979">
+                        <prompt selectionType="RANDOM">
+                            <item>It's about a robot who travels back in time to kill the inventor of intelligent machines.</item>
+                        </prompt>
+                        <getUserInput id="getUserInput_2457980">
+                            <input>
+                                <grammar>
+                                    <item>Okay</item>
+                                    <item>haha</item>
+                                </grammar>
+                                <goto ref="output_2449884"/>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>On earth?</item>
+                                    <item>$ on earth</item>
+                                    <item>$ a robot</item>
+                                    <item>$ killer robot</item>
+                                    <item>$ the inventor</item>
+                                    <item>$ intelligent machines</item>
+                                    <item>$ the 1980s</item>
+                                    <item>$ back in time</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>Yes, that's right.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457980"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>What do you mean</item>
+                                    <item>$ why</item>
+                                    <item>$ what do you mean</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>In the future, machines take over the world so the humans send a killer robot back to the 1980s to try to kill the guy who invented the intelligent machines.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457980"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>Who is the Terminator</item>
+                                    <item>$ who is the terminator</item>
+                                    <item>$ who&amp;apos;s the terminator</item>
+                                    <item>$ what is the terminator</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>The terminator is the killer robot from the future.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457980"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>Does he succeed?</item>
+                                    <item>$ succeed</item>
+                                    <item>$ kill him</item>
+                                    <item>$ only tries</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>Well, I don't want to spoil the surprise!</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457980"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>No, I mean</item>
+                                    <item>$ no i mean</item>
+                                    <item>$ no i meant</item>
+                                    <item>$ i mean</item>
+                                    <item>$ i meant</item>
+                                    <item>$ what about</item>
+                                    <item>$ how about</item>
+                                </grammar>
+                                <input>
+                                    <grammar>
+                                    <item>2001</item>
+                                    <item>$ 2001</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457907"/>
+                                </input>
+                                <input>
+                                    <grammar>
+                                    <item>The Matrix</item>
+                                    <item>$ matrix</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457995"/>
+                                </input>
+                                <goto ref="search_2414738"/>
+                            </input>
+                            <goto ref="search_2414738"/>
+                        </getUserInput>
+                    </output>
+                </input>
+                <input>
+                    <grammar>
+                        <item>What is the Matrix about?</item>
+                        <item>$ what is the matrix about</item>
+                        <item>$ what is matrix about</item>
+                        <item>$ what is the matrix</item>
+                    </grammar>
+                    <if>
+                        <cond varName="Small_Talk_Count" operator="GREATER_THEN">2</cond>
+                        <goto ref="output_2459375"/>
+                    </if>
+                    <output id="output_2457995">
+                        <prompt selectionType="RANDOM">
+                            <item>It's about a guy, named Neo, who has special powers for fighting intelligent programs in a computer simulation.</item>
+                        </prompt>
+                        <getUserInput id="getUserInput_2457996">
+                            <input>
+                                <grammar>
+                                    <item>Okay</item>
+                                    <item>haha</item>
+                                </grammar>
+                                <goto ref="output_2449884"/>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>On earth?</item>
+                                    <item>$ on earth</item>
+                                    <item>$ in the future</item>
+                                    <item>$ named Neo</item>
+                                    <item>$ intelligent programs</item>
+                                    <item>$ computer simulation</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>Yes, that's right.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457996"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>What do you mean</item>
+                                    <item>$ why</item>
+                                    <item>$ what do you mean</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>In the future, machines take over the world and trick humans into believing that a simulation, The Matrix, is reality. But one human has special abilities for defeating the machines.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457996"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>What is the Matrix</item>
+                                    <item>$ what is the matrix</item>
+                                </grammar>
+                                <output>
+                                    <prompt selectionType="RANDOM">
+                                    <item>&amp;quot;The Matrix&amp;quot; is the name for the realistic computer simulation of earth.</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457996"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>Does he succeed?</item>
+                                    <item>$ succeed</item>
+                                    <item>$ kill him</item>
+                                    <item>$ only tries</item>
+                                </grammar>
+                                <output>
+                                    <prompt>
+                                    <item>Well, I don&amp;apos;t want to spoil the surprise!</item>
+                                    </prompt>
+                                    <goto ref="getUserInput_2457996"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>No, I mean</item>
+                                    <item>$ no i mean</item>
+                                    <item>$ no i meant</item>
+                                    <item>$ i mean</item>
+                                    <item>$ i meant</item>
+                                    <item>$ what about</item>
+                                    <item>$ how about</item>
+                                </grammar>
+                                <input>
+                                    <grammar>
+                                    <item>2001</item>
+                                    <item>$ 2001</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457907"/>
+                                </input>
+                                <input>
+                                    <grammar>
+                                    <item>Terminator</item>
+                                    <item>$ terminator</item>
+                                    </grammar>
+                                    <action
+                                    varName="Genre_Preference" operator="SET_TO">{Genre_Preference.value:main}</action>
+                                    <goto ref="output_2457979"/>
+                                </input>
+                                <goto ref="search_2414738"/>
+                            </input>
+                            <goto ref="search_2414738"/>
+                        </getUserInput>
+                    </output>
                 </input>
             </folder>
             <folder selectionType="RANDOM" label="GLOBAL SEQUENCES" id="folder_2442951">
@@ -2401,15 +2764,15 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         </grammar>
                         <output>
                             <prompt>
-                                <item>{Selected_Music}.</item>
+                                <item>{Selected_Event}.</item>
                             </prompt>
                             <if>
                                 <cond varName="Popularity_Score" operator="GREATER_THEN">6.9</cond>
                                 <output>
                                     <prompt selectionType="RANDOM">
-                                    <item>Great choice! That gets fabulous locations.</item>
+                                    <item>Great choice! That gets fabulous ratings.</item>
                                     <item>That&amp;apos;s a good one! You will love it.</item>
-                                    <item> I hear that&amp;apos;s a really good music!</item>
+                                    <item> I hear that&amp;apos;s a really good event!</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                 </output>
@@ -2420,8 +2783,8 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                                 <output>
                                     <prompt selectionType="RANDOM">
                                     <item>Hmm, I hear that&amp;apos;s not such a great event.</item>
-                                    <item>Um, that one gets low locations.</item>
-                                    <item>Are you sure about that? The locations are terrible.</item>
+                                    <item>Um, that one gets low ratings.</item>
+                                    <item>Are you sure about that? The ratings are terrible.</item>
                                     </prompt>
                                     <goto ref="getUserInput_2456877"/>
                                 </output>
@@ -2452,7 +2815,7 @@ EndTime={DateTime_Mentioned_ENT.value:FROM_FULL}</script>
                         <action varName="Defaulted_Previous" operator="SET_TO_NO"/>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>Try saying &lt;i&gt;Search for events?&lt;/i&gt; or &lt;i&gt;I want to listen to Jazz.&lt;/i&gt;.</item>
+                                <item>Try saying &lt;i&gt;Search for events?&lt;/i&gt; or &lt;i&gt;I want to see a sport event&lt;/i&gt;.</item>
                             </prompt>
                         </output>
                     </input>
@@ -2531,7 +2894,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                             </grammar>
                             <output isInsertDNRStatement="true">
                                 <prompt selectionType="RANDOM">
-                                    <item>&lt;i&gt;Trailers&lt;/i&gt; are video previews for music.</item>
+                                    <item>&lt;i&gt;Trailers&lt;/i&gt; are video previews for events.</item>
                                 </prompt>
                                 <getUserInput>
                                     <input>
@@ -2556,20 +2919,75 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                             </grammar>
                             <output>
                                 <prompt selectionType="RANDOM">
-                                    <item>The &lt;i&gt;genre&lt;/i&gt; is the category of music, like Rock, Metal, Jazz, etc.</item>
+                                    <item>The &lt;i&gt;genre&lt;/i&gt; is the category of event, like Drama, Sport event, Performance, etc.</item>
                                 </prompt>
                             </output>
                         </input>
                         <input>
                             <grammar>
-                                <item>location</item>
-                                <item>$ location</item>
-                                <item>$ locations</item>
+                                <item>rating</item>
+                                <item>$ rating</item>
+                                <item>$ ratings</item>
                                 <item>$ mpaa</item>
                             </grammar>
                             <output>
                                 <prompt selectionType="RANDOM">
-                                    <item>The &lt;i&gt;location&lt;/i&gt; is a venue city.</item>
+                                    <item>The &lt;i&gt;rating&lt;/i&gt; is a recommendation by the Motion Picture Association of America about the suitability of a event's content for particular age groups. For example, G is for general audiences, while R is restricted to people 17 and older.</item>
+                                </prompt>
+                            </output>
+                        </input>
+                        <input>
+                            <grammar>
+                                <item>G</item>
+                                <item>$ G</item>
+                            </grammar>
+                            <output>
+                                <prompt selectionType="RANDOM">
+                                    <item>G stands for &lt;i&gt;General Audience&lt;/i&gt; and is appropriate for everyone.</item>
+                                </prompt>
+                            </output>
+                        </input>
+                        <input>
+                            <grammar>
+                                <item>Jazz</item>
+                                <item>$ Jazz</item>
+                            </grammar>
+                            <output>
+                                <prompt selectionType="RANDOM">
+                                    <item>Jazz means &lt;i&gt;Parents Strongly Cautioned&lt;/i&gt; or that some material may not be suitable for children under 13 years old.</item>
+                                </prompt>
+                            </output>
+                        </input>
+                        <input>
+                            <grammar>
+                                <item>Rock</item>
+                                <item>$ Rock</item>
+                            </grammar>
+                            <output>
+                                <prompt selectionType="RANDOM">
+                                    <item>Rock stands for &lt;i&gt;Parental Guidance&lt;i&gt;, which means that some material may not be suitable for children.</item>
+                                </prompt>
+                            </output>
+                        </input>
+                        <input>
+                            <grammar>
+                                <item>NR</item>
+                                <item>$ NR</item>
+                            </grammar>
+                            <output>
+                                <prompt selectionType="RANDOM">
+                                    <item>NR stands for &lt;i&gt;Not Rated&lt;/i&gt; and means that the film has not yet been rated by the MPAA.</item>
+                                </prompt>
+                            </output>
+                        </input>
+                        <input>
+                            <grammar>
+                                <item>R</item>
+                                <item>$ R</item>
+                            </grammar>
+                            <output>
+                                <prompt selectionType="RANDOM">
+                                    <item>R stands for &lt;i&gt;Restricted&lt;/i&gt; and means that children under 17 must be accompanied by parent or adult guardian.</item>
                                 </prompt>
                             </output>
                         </input>
@@ -2597,8 +3015,8 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         </input>
                         <input>
                             <grammar>
-                                <item>$ (GENRE)={Topic}</item>
-                                <item>$ (UNSUPPORTED_GENRES)={Topic}</item>
+                                <item>$ (SEGMENT)={Topic}</item>
+                                <item>$ (UNSUPPORTED_SEGMENTS)={Topic}</item>
                             </grammar>
                             <action varName="Topic" operator="SET_TO">{Topic.value:main}</action>
                             <output>
@@ -2705,11 +3123,11 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                                 <getUserInput>
                                     <input isOffline="true">
                                     <grammar>
-                                    <item>Music</item>
+                                    <item>Events</item>
+                                    <item>$ (SEGMENT)={Segment_Preference}</item>
                                     <item>$ (GENRE)={Genre_Preference}</item>
-                                    <item>$ (LOCATION)={Location_Preference}</item>
                                     <item>$ (RECENCY)={Recency_Preference}</item>
-                                    <item>$ music</item>
+                                    <item>$ events</item>
                                     </grammar>
                                     <goto ref="input_2443892"/>
                                     </input>
@@ -2809,7 +3227,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                             <cond varName="Greeting_Count" operator="GREATER_THEN">2</cond>
                             <output id="output_2459363">
                                 <prompt selectionType="RANDOM">
-                                    <item>You&amp;apos;re very polite, but don&amp;apos;t you want me to look up music for you?</item>
+                                    <item>You&amp;apos;re very polite, but don&amp;apos;t you want me to look up events for you?</item>
                                 </prompt>
                                 <getUserInput>
                                     <input>
@@ -2888,7 +3306,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                             <cond varName="Greeting_Count" operator="GREATER_THEN">2</cond>
                             <output>
                                 <prompt>
-                                    <item>You&amp;apos;re very polite, but don&amp;apos;t you want me to look up music for you?</item>
+                                    <item>You&amp;apos;re very polite, but don&amp;apos;t you want me to look up events for you?</item>
                                 </prompt>
                                 <getUserInput>
                                     <input>
@@ -3240,25 +3658,25 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                     </grammar>
                 </concept>
             </folder>
-            <folder selectionType="RANDOM" label="Music-related variations">
+            <folder selectionType="RANDOM" label="Event-related variations">
                 <concept>
                     <grammar>
-                        <item>music</item>
-                        <item>music</item>
-                        <item>events</item>
                         <item>event</item>
-                        <item>performances</item>
-                        <item>performance</item>
+                        <item>events</item>
+                        <item>film</item>
+                        <item>films</item>
+                        <item>flick</item>
+                        <item>flicks</item>
                     </grammar>
                 </concept>
                 <concept>
                     <grammar>
-                        <item>venues</item>
-                        <item>venue</item>
-                        <item>hall</item>
-                        <item>halls</item>
-                        <item>concert</item>
-                        <item>concerts</item>
+                        <item>theater</item>
+                        <item>theaters</item>
+                        <item>theatre</item>
+                        <item>theatres</item>
+                        <item>cinema</item>
+                        <item>cinemas</item>
                     </grammar>
                 </concept>
                 <concept>
@@ -3267,10 +3685,10 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <item>showtimes</item>
                         <item>show time</item>
                         <item>show times</item>
-                        <item>music time</item>
-                        <item>music times</item>
-                        <item>music showtimes</item>
-                        <item>music show times</item>
+                        <item>event time</item>
+                        <item>event times</item>
+                        <item>event showtimes</item>
+                        <item>event show times</item>
                     </grammar>
                 </concept>
                 <concept>
@@ -3286,8 +3704,8 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                 </concept>
                 <concept>
                     <grammar>
-                        <item>Locations</item>
-                        <item>Location</item>
+                        <item>Ratings</item>
+                        <item>Rating</item>
                         <item>Popularity</item>
                         <item>Tomatoes</item>
                         <item>stars</item>
@@ -3365,6 +3783,32 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <item>dowtown</item>
                     </grammar>
                 </concept>
+                <concept id="concept_2510154">
+                    <grammar>
+                        <item>Adult</item>
+                        <item>Adults Only</item>
+                        <item>NC 17</item>
+                        <item>NC-17</item>
+                        <item>NC17</item>
+                        <item>NC 17 rated</item>
+                        <item>NC-17 rated</item>
+                        <item>NC-17-rated</item>
+                        <item>NC 17-rated</item>
+                        <item>NC17 rated</item>
+                        <item>NC17-rated</item>
+                        <item>X</item>
+                        <item>X-rated</item>
+                        <item>X rated</item>
+                        <item>XXX</item>
+                        <item>XXX-rated</item>
+                        <item>XXX rated</item>
+                        <item>Triple X</item>
+                        <item>Triple X-rated</item>
+                        <item>Triple X rated</item>
+                        <item>NC seventeen</item>
+                        <item>NC-seventeen</item>
+                    </grammar>
+                </concept>
                 <concept>
                     <grammar>
                         <item>search</item>
@@ -3384,54 +3828,62 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <item>I wanna</item>
                     </grammar>
                 </concept>
-                <folder label="Genres">
+                <folder label="Segments">
                     <concept>
                         <grammar>
-                            <item>jazz</item>
-                            <item>rock</item>
-                            <item>metal</item>
-                            <item>blues</item>
-                            <item>ticktonic</item>
-                            <item>reggie</item>
-                            <item>dubstep</item>
+                            <item>arthouse film</item>
+                            <item>arthouse films</item>
+                            <item>arthouse event</item>
+                            <item>arthouse events</item>
+                            <item>art-house film</item>
+                            <item>art-house films</item>
+                            <item>art-house event</item>
+                            <item>art-house events</item>
+                            <item>art house film</item>
+                            <item>art house films</item>
+                            <item>art house event</item>
+                            <item>art house events</item>
+                            <item>art house</item>
+                            <item>arthouse</item>
+                            <item>art-house</item>
                         </grammar>
                     </concept>
                     <concept>
                         <grammar>
                             <item>children film</item>
                             <item>children films</item>
-                            <item>children music</item>
-                            <item>children music</item>
+                            <item>children event</item>
+                            <item>children events</item>
                             <item>children flick</item>
                             <item>children flicks</item>
                             <item>childrens flick</item>
                             <item>childrens flicks</item>
                             <item>childrens film</item>
                             <item>childrens films</item>
-                            <item>childrens music</item>
-                            <item>childrens music</item>
+                            <item>childrens event</item>
+                            <item>childrens events</item>
                             <item>children&amp;apos;s film</item>
                             <item>children&amp;apos;s films</item>
-                            <item>children&amp;apos;s music</item>
-                            <item>children&amp;apos;s music</item>
+                            <item>children&amp;apos;s event</item>
+                            <item>children&amp;apos;s events</item>
                             <item>children&amp;apos;s flick</item>
                             <item>children&amp;apos;s flicks</item>
                             <item>kid film</item>
                             <item>kid films</item>
-                            <item>kid music</item>
+                            <item>kid event</item>
                             <item>kid flick</item>
                             <item>kid flicks</item>
-                            <item>kid music</item>
+                            <item>kid events</item>
                             <item>kids film</item>
                             <item>kids films</item>
-                            <item>kids music</item>
-                            <item>kids music</item>
+                            <item>kids event</item>
+                            <item>kids events</item>
                             <item>kids flick</item>
                             <item>kids flicks</item>
                             <item>kid&amp;apos;s film</item>
                             <item>kid&amp;apos;s films</item>
-                            <item>kid&amp;apos;s music</item>
-                            <item>kid&amp;apos;s music</item>
+                            <item>kid&amp;apos;s event</item>
+                            <item>kid&amp;apos;s events</item>
                             <item>kid&amp;apos;s flick</item>
                             <item>kid&amp;apos;s flicks</item>
                         </grammar>
@@ -3440,8 +3892,8 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <grammar>
                             <item>drama film</item>
                             <item>drama films</item>
-                            <item>drama music</item>
-                            <item>drama music</item>
+                            <item>drama event</item>
+                            <item>drama events</item>
                             <item>drama</item>
                             <item>dramas</item>
                             <item>drama flick</item>
@@ -3452,55 +3904,55 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <grammar>
                             <item>historical film</item>
                             <item>historical films</item>
-                            <item>historical music</item>
-                            <item>historical music</item>
+                            <item>historical event</item>
+                            <item>historical events</item>
                             <item>period drama</item>
                             <item>period dramas</item>
                             <item>period film</item>
                             <item>period films</item>
-                            <item>period music</item>
-                            <item>period music</item>
+                            <item>period event</item>
+                            <item>period events</item>
                             <item>historical drama</item>
                             <item>historical dramas</item>
                         </grammar>
                     </concept>
                     <concept id="concept_1852697">
                         <grammar>
-                            <item>horror film</item>
-                            <item>horror films</item>
-                            <item>horror music</item>
-                            <item>horror music</item>
-                            <item>scary music</item>
-                            <item>scary music</item>
+                            <item>film film</item>
+                            <item>film films</item>
+                            <item>film event</item>
+                            <item>film events</item>
+                            <item>scary event</item>
+                            <item>scary events</item>
                             <item>scary film</item>
                             <item>scary films</item>
                             <item>slasher film</item>
                             <item>slasher films</item>
-                            <item>slasher music</item>
-                            <item>slasher music</item>
+                            <item>slasher event</item>
+                            <item>slasher events</item>
                             <item>slasher flick</item>
                             <item>slasher flicks</item>
                         </grammar>
                     </concept>
                     <concept id="concept_1852702">
                         <grammar>
-                            <item>romantic comedy film</item>
-                            <item>romantic comedy music</item>
+                            <item>romantic sport event film</item>
+                            <item>romantic sport event event</item>
                             <item>romantic comedies film</item>
-                            <item>romantic comedy flick</item>
-                            <item>romantic comedy flicks</item>
-                            <item>romantic comedy</item>
+                            <item>romantic sport event flick</item>
+                            <item>romantic sport event flicks</item>
+                            <item>romantic sport event</item>
                             <item>romantic comedies</item>
                             <item>rom com</item>
                             <item>rom coms</item>
                             <item>rom-com</item>
                             <item>rom-coms</item>
-                            <item>rom com music</item>
-                            <item>rom com music</item>
+                            <item>rom com event</item>
+                            <item>rom com events</item>
                             <item>rom com film</item>
                             <item>rom com films</item>
-                            <item>rom-com music</item>
-                            <item>rom-com music</item>
+                            <item>rom-com event</item>
+                            <item>rom-com events</item>
                             <item>rom-com film</item>
                             <item>rom-com films</item>
                             <item>rom com flick</item>
@@ -3513,22 +3965,22 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <grammar>
                             <item>sad film</item>
                             <item>sad films</item>
-                            <item>sad music</item>
-                            <item>sad music</item>
+                            <item>sad event</item>
+                            <item>sad events</item>
                             <item>sad flick</item>
                             <item>sad flicks</item>
                             <item>tear-jerker film</item>
                             <item>tear-jerker films</item>
-                            <item>tear-jerker music</item>
-                            <item>tear-jerker music</item>
+                            <item>tear-jerker event</item>
+                            <item>tear-jerker events</item>
                             <item>tear-jerker flick</item>
                             <item>tear-jerker flicks</item>
                             <item>tear-jerkers</item>
                             <item>tear-jerker</item>
                             <item>tear jerker film</item>
                             <item>tear jerker films</item>
-                            <item>tear jerker music</item>
-                            <item>tear jerker music</item>
+                            <item>tear jerker event</item>
+                            <item>tear jerker events</item>
                             <item>tear jerker flick</item>
                             <item>tear jerker flicks</item>
                             <item>tear jerkers</item>
@@ -3539,80 +3991,80 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                         <grammar>
                             <item>sci-fi film</item>
                             <item>sci-fi films</item>
-                            <item>sci-fi music</item>
-                            <item>sci-fi music</item>
+                            <item>sci-fi event</item>
+                            <item>sci-fi events</item>
                             <item>sci fi film</item>
                             <item>sci fi films</item>
-                            <item>sci fi music</item>
-                            <item>sci fi music</item>
+                            <item>sci fi event</item>
+                            <item>sci fi events</item>
                             <item>scifi film</item>
                             <item>scifi films</item>
-                            <item>scifi music</item>
-                            <item>scifi music</item>
+                            <item>scifi event</item>
+                            <item>scifi events</item>
                             <item>sciencefiction film</item>
                             <item>sciencefiction films</item>
-                            <item>sciencefiction music</item>
-                            <item>sciencefiction music</item>
+                            <item>sciencefiction event</item>
+                            <item>sciencefiction events</item>
                             <item>science-fiction film</item>
                             <item>science-fiction films</item>
-                            <item>science-fiction music</item>
-                            <item>science-fiction music</item>
+                            <item>science-fiction event</item>
+                            <item>science-fiction events</item>
                             <item>science fiction film</item>
                             <item>science fiction films</item>
-                            <item>science fiction music</item>
-                            <item>science fiction music</item>
+                            <item>science fiction event</item>
+                            <item>science fiction events</item>
                         </grammar>
                     </concept>
                     <concept id="concept_1852807">
                         <grammar>
                             <item>war film</item>
                             <item>war films</item>
-                            <item>war music</item>
-                            <item>war music</item>
+                            <item>war event</item>
+                            <item>war events</item>
                         </grammar>
                     </concept>
                     <concept>
                         <grammar>
                             <item>x rated film</item>
                             <item>x rated films</item>
-                            <item>x rated music</item>
-                            <item>x rated music</item>
+                            <item>x rated event</item>
+                            <item>x rated events</item>
                             <item>x rated flick</item>
                             <item>x rated flicks</item>
                             <item>x-rated film</item>
                             <item>x-rated films</item>
-                            <item>x-rated music</item>
-                            <item>x-rated music</item>
+                            <item>x-rated event</item>
+                            <item>x-rated events</item>
                             <item>x-rated flick</item>
                             <item>x-rated flicks</item>
                             <item>pornographic film</item>
                             <item>pornographic films</item>
-                            <item>pornographic music</item>
-                            <item>pornographic music</item>
+                            <item>pornographic event</item>
+                            <item>pornographic events</item>
                             <item>pornographic flick</item>
                             <item>pornographic flicks</item>
                             <item>pornography film</item>
                             <item>pornography films</item>
-                            <item>pornography music</item>
-                            <item>pornography music</item>
+                            <item>pornography event</item>
+                            <item>pornography events</item>
                             <item>pornography flick</item>
                             <item>pornography flicks</item>
                             <item>porn film</item>
                             <item>porn films</item>
-                            <item>porn music</item>
-                            <item>porn music</item>
+                            <item>porn event</item>
+                            <item>porn events</item>
                             <item>porn flick</item>
                             <item>porn flicks</item>
                             <item>XXX film</item>
                             <item>XXX films</item>
-                            <item>XXX music</item>
-                            <item>XXX music</item>
+                            <item>XXX event</item>
+                            <item>XXX events</item>
                             <item>XXX flick</item>
                             <item>XXX flicks</item>
                             <item>triple X film</item>
                             <item>triple X films</item>
-                            <item>triple X music</item>
-                            <item>triple X music</item>
+                            <item>triple X event</item>
+                            <item>triple X events</item>
                             <item>triple X flick</item>
                             <item>triple X flicks</item>
                             <item>porn</item>
@@ -3623,9 +4075,9 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                             <item>sex film</item>
                             <item>sex tape</item>
                             <item>sex flick</item>
-                            <item>sex music</item>
-                            <item>sex music</item>
-                            <item>adult music</item>
+                            <item>sex event</item>
+                            <item>sex events</item>
+                            <item>adult events</item>
                         </grammar>
                     </concept>
                 </folder>
@@ -3775,101 +4227,126 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
         </folder>
     </flow>
     <entities>
-        <entity name="LOCATION" entityType="GENERIC">
-            <value name="Hollywood" value="Hollywood">
-                <grammar>
-                    <item>Hollywood</item>
-                    <item>hollywood</item>
-                    <item>LA</item>
-                    <item>Los Angeles</item>
-                    <item>city of angels</item>
-                </grammar>
-            </value>
-            <value name="Boston" value="Boston">
-                <grammar>
-                    <item>Boston</item>
-                    <item>boston</item>
-                </grammar>
-            </value>
-            <value name="New York" value="New York">
-                <grammar>
-                    <item>New York</item>
-                    <item>NY</item>
-                    <item>Nue York</item>
-                    <item>new york</item>
-                    <item>ny</item>
-                    <item>manhattan</item>
-                    <item>Manhattan</item>
-                    <item>the city</item>
-                </grammar>
-            </value>
-            <value name="San Francisco" value="San Francisco">
-                <grammar>
-                    <item>San Francisco</item>
-                    <item>SF</item>
-                    <item>sf</item>
-                    <item>Bay Area</item>
-                    <item>san francisco</item>
-                </grammar>
-            </value>
-            <entityRules></entityRules>
-        </entity>
         <entity name="GENRE" entityType="GENERIC">
-            <value name="Jazz" value="Jazz">
+            <value name="G" value="G">
                 <grammar>
-                    <item>jazz</item>
-                    <item>JAZZ</item>
-                    <item>Jazz</item>
+                    <item>Rap</item>
+                    <item>rap</item>
+                    <item>hip hop</item>
+                    <item>Hip Hop</item>
                 </grammar>
             </value>
             <value name="Rock" value="Rock">
                 <grammar>
                     <item>Rock</item>
-                    <item>Hard Rock</item>
-                    <item>rock</item>
-                    <item>hard rock</item>
-                </grammar>
-            </value>
-            <value name="Metal" value="Metal">
-                <grammar>
+                    <item>Old School</item>
                     <item>Heavy Metal</item>
-                    <item>heavy metal</item>
-                    <item>death metal</item>
-                    <item>doom metal</item>
-                    <item>metal</item>
-                    <item>Metal</item>
+                    <item>Hard Rock</item>
                 </grammar>
             </value>
-            <value name="Rap" value="Rap">
+            <value name="Jazz" value="Jazz">
                 <grammar>
-                    <item>Rap</item>
-                    <item>rap</item>
-                    <item>hip-hop</item>
-                    <item>hip hop</item>
-                    <item>Hip Hop</item>
-                    <item>Hip-Hop</item>
+                    <item>Rock 13</item>
+                    <item>Jazz</item>
+                    <item>Rock13</item>
+                    <item>Rock 13 rated</item>
+                    <item>Jazz rated</item>
+                    <item>Jazz-rated</item>
+                    <item>Rock13 rated</item>
+                    <item>Rock13-rated</item>
+                    <item>Parents Strongly Cautioned</item>
+                    <item>Rock thirteen</item>
+                    <item>Rock-thirteen</item>
+                    <item>rated Rock13</item>
+                    <item>rated Jazz</item>
+                    <item>rated Rock 13</item>
                 </grammar>
             </value>
-            <value name="Electronic" value="Electronic">
+            <value name="R" value="R">
                 <grammar>
-                    <item>Electronic</item>
-                    <item>electronic</item>
-                    <item>electro</item>
-                    <item>Electro</item>
+                    <item>R rated</item>
+                    <item>R-rated</item>
+                    <item>R</item>
+                    <item>Restricted</item>
+                    <item>rated R</item>
                 </grammar>
             </value>
+            <value name="NR" value="NR">
+                <grammar>
+                    <item>Not Rated</item>
+                    <item>Not-rated</item>
+                </grammar>
+            </value>
+            <entityRules></entityRules>
+        </entity>
+        <entity name="SEGMENT" entityType="GENERIC">
+            <value name="Art and Theatre" value="Art and Theatre">
+                <grammar>
+                    <item>Arts</item>
+                    <item>arts</item>
+                    <item>theatre</item>
+                    <item>magic</item>
+                    <item>illusion</item>
+                    <item>comedy</item>
+                    <item>classic</item>
+                    <item>variety</item>
+                    <item>dance</item>
+                    <item>magic</item>
+                    <item>fasion</item>
+                </grammar>
+            </value>
+            <value name="Film" value="Film">
+                <grammar>
+                    <item>Anime</item>
+                    <item>Animated</item>
+                    <item>Cartoon</item>
+                    <item>Cartoons</item>
+                    <item>Family</item>
+                    <item>Foreign</item>
+                </grammar>
+            </value>
+            <value name="Sports" value="Sports">
+                <grammar>
+                    <item>racing</item>
+                    <item>rugby</item>
+                    <item>hockey</item>
+                    <item>karate</item>
+                    <item>table tennis</item>
+                    <item>swimming</item>
+                    <item>badminton</item>
+                    <item>surfing</item>
+                    <item>boxing</item>
+                    <item>tennis</item>
+                </grammar>
+            </value>
+            <value name="Sport event" value="Sport event">
+                <grammar>
+                    <item>racing</item>
+                    <item>rugby</item>
+                    <item>hockey</item>
+                    <item>karate</item>
+                    <item>table tennis</item>
+                    <item>swimming</item>
+                    <item>badminton</item>
+                    <item>surfing</item>
+                    <item>boxing</item>
+                    <item>tennis</item>
+                </grammar>
+            </value>
+
             <value name="Documentary" value="Documentary">
                 <grammar>
                     <item>documentaries</item>
                 </grammar>
             </value>
-            <value name="Techno" value="Techno">
+            <value name="Drama" value="Drama">
+                <concept ref="concept_1852694"/>
                 <grammar>
-                    <item>Techno</item>
-                    <item>techno</item>
+                    <item>dramas</item>
                 </grammar>
             </value>
             <value name="Family" value="Family">
+                <concept ref="concept_2503401"/>
                 <grammar>
                     <item>child</item>
                     <item>childs</item>
@@ -3911,7 +4388,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                     <item>period piece</item>
                 </grammar>
             </value>
-            <value name="Horror" value="Horror">
+            <value name="Film" value="Film">
                 <concept ref="concept_1852697"/>
                 <grammar>
                     <item>scary</item>
@@ -3925,17 +4402,17 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                     <item>whodunnit</item>
                 </grammar>
             </value>
-            <value name="Romance" value="Romance">
+            <value name="Music" value="Music">
                 <grammar>
-                    <item>romances</item>
-                    <item>romantic</item>
-                    <item>chick flicks</item>
+                    <item>rock</item>
+                    <item>rap</item>
+                    <item>doom metal</item>
                     <item>chick flick</item>
-                    <item>sexy</item>
-                    <item>steamy</item>
-                    <item>take my date</item>
-                    <item>take a date</item>
-                    <item>for my date</item>
+                    <item>punk</item>
+                    <item>hardcore</item>
+                    <item>funck</item>
+                    <item>electronic</item>
+                    <item>pop</item>
                 </grammar>
             </value>
             <value name="Science Fiction" value="Science Fiction">
@@ -3947,6 +4424,13 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                     <item>alien</item>
                     <item>aliens</item>
                     <item>little green men</item>
+                </grammar>
+            </value>
+            <value name="TV Event" value="TV Event">
+                <grammar>
+                    <item>Made for TV event</item>
+                    <item>Made for TV events</item>
+                    <item>TV events</item>
                 </grammar>
             </value>
             <value name="Thriller" value="Thriller">
@@ -4033,7 +4517,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                     <item>ongoing</item>
                     <item>latest</item>
                     <item>now</item>
-                    <item>already at the music</item>
+                    <item>already at the events</item>
                     <item>whatever is on</item>
                 </grammar>
             </value>
@@ -4058,7 +4542,7 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
             <value name="Agent Smith" value="Agent Smith"/>
             <entityRules></entityRules>
         </entity>
-        <entity name="BY_OTHER_MUSIC" entityType="GENERIC">
+        <entity name="BY_OTHER_EVENT" entityType="GENERIC">
             <value name="by Theater" value="by Theater">
                 <grammar>
                     <item>by theaters</item>
@@ -4076,22 +4560,22 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
             <value name="by Title" value="by Title">
                 <grammar>
                     <item>by Titles</item>
-                    <item>by Music Name</item>
-                    <item>by Music Names</item>
-                    <item>the music called</item>
-                    <item>that music called</item>
+                    <item>by Event Name</item>
+                    <item>by Event Names</item>
+                    <item>the event called</item>
+                    <item>that event called</item>
                 </grammar>
             </value>
             <entityRules></entityRules>
         </entity>
-        <entity name="UNSUPPORTED_GENRES" entityType="GENERIC">
+        <entity name="UNSUPPORTED_SEGMENTS" entityType="GENERIC">
             <value name="Musical" value="Musical">
                 <grammar>
                     <item>musicals</item>
                     <item>broadway</item>
                 </grammar>
             </value>
-            <value name="Romantic Comedy" value="Romantic Comedy">
+            <value name="Romantic Sport event" value="Romantic Sport event">
                 <concept ref="concept_1852702"/>
                 <grammar>
                     <item>romantic comedies</item>
@@ -4149,9 +4633,9 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
             <entityRules></entityRules>
         </entity>
         <entity name="CLASSES" entityType="GENERIC">
-            <value name="look up music" value="SearchMusic">
+            <value name="look up events" value="SearchEvents">
                 <grammar>
-                    <item>music</item>
+                    <item>events</item>
                 </grammar>
             </value>
             <value name="find showtimes on Fandango" value="CheckShowtimes">
@@ -4212,25 +4696,25 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
             <entityRules></entityRules>
         </entity>
         <entity name="UNSUPPORTED_ACTIONS" entityType="GENERIC">
-            <value name="look up music by title" value="title">
+            <value name="look up events by title" value="title">
                 <grammar>
                     <item>titles</item>
-                    <item>music name</item>
-                    <item>music names</item>
+                    <item>event name</item>
+                    <item>event names</item>
                 </grammar>
             </value>
             <value
-                name="look up music by date, only current and upcoming" value="by date">
+                name="look up events by date, only current and upcoming" value="by date">
                 <grammar>
                     <item>by day</item>
                 </grammar>
             </value>
             <value
-                name="look up reviews, but you can find a star location under the trailer" value="review">
+                name="look up reviews, but you can find a star rating under the trailer" value="review">
                 <grammar>
                     <item>reviews</item>
-                    <item>music review</item>
-                    <item>music reviews</item>
+                    <item>event review</item>
+                    <item>event reviews</item>
                 </grammar>
             </value>
             <value name="look up actors or actresses" value="actors">
@@ -4252,10 +4736,10 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                 </grammar>
             </value>
             <value
-                name="look up old music, only current and upcoming ones" value="old music">
+                name="look up old events, only current and upcoming ones" value="old events">
                 <grammar>
-                    <item>old music</item>
-                    <item>classic music</item>
+                    <item>old events</item>
+                    <item>classic events</item>
                     <item>oldies</item>
                     <item>classics</item>
                 </grammar>
@@ -4263,9 +4747,9 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
             <entityRules></entityRules>
         </entity>
         <entity name="SUPPORTED_ACTIONS" entityType="GENERIC">
-            <value name="look up music by genre and MPAA location" value="music">
+            <value name="look up events by genre and MPAA rating" value="events">
                 <grammar>
-                    <item>music</item>
+                    <item>event</item>
                 </grammar>
             </value>
             <value
@@ -4277,31 +4761,31 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
                 </grammar>
             </value>
             <value
-                name="look up music trailers once you search for current or upcoming music" value="trailers">
+                name="look up event trailers once you search for current or upcoming events" value="trailers">
                 <grammar>
                     <item>trailer</item>
                 </grammar>
             </value>
             <value
-                name="find music summaries current and upcoming music" value="summaries">
+                name="find event summaries current and upcoming events" value="summaries">
                 <grammar>
                     <item>plot</item>
                     <item>plots</item>
                     <item>summary</item>
                 </grammar>
             </value>
-            <value name="look up music by MPAA location" value="location">
+            <value name="look up events by MPAA rating" value="rating">
                 <grammar>
-                    <item>locations</item>
+                    <item>ratings</item>
                     <item>MPAA</item>
-                    <item>location</item>
+                    <item>genre</item>
                 </grammar>
             </value>
-            <value name="look up music by their genre" value="genre">
+            <value name="look up events by their genre" value="genre">
                 <grammar>
                     <item>genres</item>
-                    <item>type of music</item>
-                    <item>music type</item>
+                    <item>type of event</item>
+                    <item>event type</item>
                 </grammar>
             </value>
             <entityRules></entityRules>
@@ -4310,25 +4794,25 @@ Say &lt;i&gt;got to go&lt;/i&gt; or &lt;i&gt;bye&lt;/i&gt; when you're finished.
     <constants>
         <var_folder name="Home">
             <var_folder name="General" type="CONST">
-                <var name="UI_DETAILS" type="TAG" description="UI Details">&amp;lt;Title&amp;gt;Watson&amp;lt;/Title&amp;gt; 
- &amp;lt;Head&amp;gt;&amp;lt;/Head&amp;gt; 
- &amp;lt;Header&amp;gt;&amp;lt;img id=&amp;quot;headerlogo&amp;quot; src=&amp;quot;http://www-03.ibm.com/ibm/history/ibm100/images/icp/R259780Y30165R43/us__en_us__ibm100__watson__watson_logo__220x125.png&amp;quot; width=&amp;quot;250&amp;quot; /&amp;gt;&amp;lt;/Header&amp;gt; 
- &amp;lt;Body&amp;gt;&amp;lt;/Body&amp;gt; 
- &amp;lt;Footer&amp;gt;Powered by Watson&amp;lt;/Footer&amp;gt; 
- &amp;lt;RelatedItemsLabel&amp;gt;Learn more about...&amp;lt;/RelatedItemsLabel&amp;gt; 
- &amp;lt;InitInputBoxLabel&amp;gt;Type here...&amp;lt;/InitInputBoxLabel&amp;gt; 
- &amp;lt;UserSayLabel&amp;gt;You:&amp;lt;/UserSayLabel&amp;gt; 
- &amp;lt;SayButtonLabel&amp;gt;Say&amp;lt;/SayButtonLabel&amp;gt; 
- &amp;lt;SayButtonImage&amp;gt;&amp;lt;/SayButtonImage&amp;gt; 
- &amp;lt;PopupLoadMsg&amp;gt;&amp;lt;/PopupLoadMsg&amp;gt; 
- &amp;lt;CloseWindowCode&amp;gt;&amp;lt;/CloseWindowCode&amp;gt; 
- &amp;lt;DynamicMessaging&amp;gt;0&amp;lt;/DynamicMessaging&amp;gt; 
- &amp;lt;Avatar&amp;gt;0&amp;lt;/Avatar&amp;gt; 
- &amp;lt;AvatarSpeechEngineId&amp;gt;-1&amp;lt;/AvatarSpeechEngineId&amp;gt; 
- &amp;lt;AvatarSpeechLanguageId&amp;gt;-1&amp;lt;/AvatarSpeechLanguageId&amp;gt; 
- &amp;lt;AvatarSpeechVoiceId&amp;gt;-1&amp;lt;/AvatarSpeechVoiceId&amp;gt; 
+                <var name="UI_DETAILS" type="TAG" description="UI Details">&amp;lt;Title&amp;gt;Watson&amp;lt;/Title&amp;gt;
+ &amp;lt;Head&amp;gt;&amp;lt;/Head&amp;gt;
+ &amp;lt;Header&amp;gt;&amp;lt;img id=&amp;quot;headerlogo&amp;quot; src=&amp;quot;http://www-03.ibm.com/ibm/history/ibm100/images/icp/R259780Y30165R43/us__en_us__ibm100__watson__watson_logo__220x125.png&amp;quot; width=&amp;quot;250&amp;quot; /&amp;gt;&amp;lt;/Header&amp;gt;
+ &amp;lt;Body&amp;gt;&amp;lt;/Body&amp;gt;
+ &amp;lt;Footer&amp;gt;Powered by Watson&amp;lt;/Footer&amp;gt;
+ &amp;lt;RelatedItemsLabel&amp;gt;Learn more about...&amp;lt;/RelatedItemsLabel&amp;gt;
+ &amp;lt;InitInputBoxLabel&amp;gt;Type here...&amp;lt;/InitInputBoxLabel&amp;gt;
+ &amp;lt;UserSayLabel&amp;gt;You:&amp;lt;/UserSayLabel&amp;gt;
+ &amp;lt;SayButtonLabel&amp;gt;Say&amp;lt;/SayButtonLabel&amp;gt;
+ &amp;lt;SayButtonImage&amp;gt;&amp;lt;/SayButtonImage&amp;gt;
+ &amp;lt;PopupLoadMsg&amp;gt;&amp;lt;/PopupLoadMsg&amp;gt;
+ &amp;lt;CloseWindowCode&amp;gt;&amp;lt;/CloseWindowCode&amp;gt;
+ &amp;lt;DynamicMessaging&amp;gt;0&amp;lt;/DynamicMessaging&amp;gt;
+ &amp;lt;Avatar&amp;gt;0&amp;lt;/Avatar&amp;gt;
+ &amp;lt;AvatarSpeechEngineId&amp;gt;-1&amp;lt;/AvatarSpeechEngineId&amp;gt;
+ &amp;lt;AvatarSpeechLanguageId&amp;gt;-1&amp;lt;/AvatarSpeechLanguageId&amp;gt;
+ &amp;lt;AvatarSpeechVoiceId&amp;gt;-1&amp;lt;/AvatarSpeechVoiceId&amp;gt;
  &amp;lt;CSS_Body&amp;gt;background-color:#FFFFFF;
-&amp;lt;/CSS_Body&amp;gt; 
+&amp;lt;/CSS_Body&amp;gt;
  &amp;lt;CSS_ChatHistoryBox&amp;gt;background-color:#FFFFFF;
 text-align:left;
 height:5000px;
@@ -4342,17 +4826,17 @@ word-wrap: break-word;
 border-style:solid;
 border-width:1px;
 border-color:#000000;
-&amp;lt;/CSS_ChatHistoryBox&amp;gt; 
+&amp;lt;/CSS_ChatHistoryBox&amp;gt;
  &amp;lt;CSS_CyberTwinText&amp;gt;font-family: verdana, arial, sans-serif;
 font-size: 11px;
-&amp;lt;/CSS_CyberTwinText&amp;gt; 
+&amp;lt;/CSS_CyberTwinText&amp;gt;
  &amp;lt;CSS_CyberTwinTextLink&amp;gt;font-family: verdana, arial, sans-serif;
 font-size: 11px;
-&amp;lt;/CSS_CyberTwinTextLink&amp;gt; 
+&amp;lt;/CSS_CyberTwinTextLink&amp;gt;
  &amp;lt;CSS_UserText&amp;gt;font-family: verdana, arial, sans-serif;
 font-size: 11px;
 font-weight: normal;
-&amp;lt;/CSS_UserText&amp;gt; 
+&amp;lt;/CSS_UserText&amp;gt;
  &amp;lt;CSS_InputBox&amp;gt;font-family: verdana, arial, sans-serif;
 font-size: 11px;
 background-color:#FFFFFF;
@@ -4361,7 +4845,7 @@ height: 40px;
 border-width: 1px;
 border-style: solid;
 border-color: #000000;
-&amp;lt;/CSS_InputBox&amp;gt; 
+&amp;lt;/CSS_InputBox&amp;gt;
  &amp;lt;CSS_RelatedItemsBox&amp;gt;background-color:#D5D5D5;
 text-align:left;
 height:110px;
@@ -4392,7 +4876,7 @@ border-color:#000000;
                 <var name="Class2_Text" type="TEXT" description="Display text for class2"/>
                 <var name="Previous_Class" type="TEXT" description="Place to store utterance class"/>
                 <var name="Array_Lookup" type="TEXT"
-                    initValue="&lt;SearchMusic>look up music&lt;/SearchMusic>&lt;CheckShowtimes>find showtimes on Fandango&lt;/CheckShowtimes>&lt;LookupActors>look up actors&lt;/LookupActors>&lt;LookupDirectors>look up directors&lt;/LookupDirectors>&lt;OtherClass>do something else&lt;/OtherClass>&lt;GiveName>that's your name&lt;/GiveName>&lt;OpeningTalk>to greet me&lt;/OpeningTalk>&lt;ClosingTalk>to say goodbye&lt;/ClosingTalk>&lt;SmallTalk>you just want to chit chat&lt;/SmallTalk>&lt;RepairTalk>you don't understand&lt;/RepairTalk>&lt;PreSequence>to check on something&lt;/PreSequence>&lt;YesClass>to say yes&lt;/YesClass>&lt;NoClass>to say no&lt;/NoClass>&lt;3rdTurnReceipts>just acknowledging me&lt;/3rdTurnReceipts>" description="For matching Class1 to Class1_Text"/>
+                    initValue="&lt;SearchEvents>look up events&lt;/SearchEvents>&lt;CheckShowtimes>find showtimes on Fandango&lt;/CheckShowtimes>&lt;LookupActors>look up actors&lt;/LookupActors>&lt;LookupDirectors>look up directors&lt;/LookupDirectors>&lt;OtherClass>do something else&lt;/OtherClass>&lt;GiveName>that's your name&lt;/GiveName>&lt;OpeningTalk>to greet me&lt;/OpeningTalk>&lt;ClosingTalk>to say goodbye&lt;/ClosingTalk>&lt;SmallTalk>you just want to chit chat&lt;/SmallTalk>&lt;RepairTalk>you don't understand&lt;/RepairTalk>&lt;PreSequence>to check on something&lt;/PreSequence>&lt;YesClass>to say yes&lt;/YesClass>&lt;NoClass>to say no&lt;/NoClass>&lt;3rdTurnReceipts>just acknowledging me&lt;/3rdTurnReceipts>" description="For matching Class1 to Class1_Text"/>
                 <var name="Defaulted_Previous" type="YESNO"
                     initValue="No" description="Whether input has hit Default node already"/>
                 <var name="Node_Class" type="TEXT"/>
@@ -4412,26 +4896,26 @@ border-color:#000000;
                 <var name="Terminal_Exchange" type="YESNO"
                     initValue="No" description="Has the system already said goodbye?"/>
             </var_folder>
-            <var_folder name="Music Search" type="VAR">
+            <var_folder name="Event Search" type="VAR">
                 <var name="Display_Trailer" type="YESNO" initValue="No"/>
-                <var name="Display_Music_Details" type="YESNO" initValue="No"/>
+                <var name="Display_Event_Details" type="YESNO" initValue="No"/>
                 <var name="Search_Results" type="TEXT" description="No_Hits, One_Hit, Multiple_Hits"/>
-                <var name="Display_Reviews" type="YESNO" initValue="No" description="Tells backend to display reviews for Selected_Music"/>
-                <var name="Num_Music" type="NUMBER" initValue="0" description="Number of music search results"/>
-                <var name="Current_Index" type="NUMBER" initValue="0" description="Range of music results to display. Values: 10, 20, 30..."/>
-                <var name="Show_Next" type="YESNO" initValue="No" description="Show the next batch of music search results."/>
-                <var name="Show_Previous" type="YESNO" initValue="No" description="Show previous batch of music search results."/>
+                <var name="Display_Reviews" type="YESNO" initValue="No" description="Tells backend to display reviews for Selected_Event"/>
+                <var name="Num_Events" type="NUMBER" initValue="0" description="Number of event search results"/>
+                <var name="Current_Index" type="NUMBER" initValue="0" description="Range of events results to display. Values: 10, 20, 30..."/>
+                <var name="Show_Next" type="YESNO" initValue="No" description="Show the next batch of event search results."/>
+                <var name="Show_Previous" type="YESNO" initValue="No" description="Show previous batch of events search results."/>
                 <var name="Popularity_Score" type="NUMBER"
                     initValue="0.5" description="Popularity score as measured by TMDB.org."/>
                 <var name="Total_Pages" type="NUMBER" initValue="0" description="Total number of pages returned by TMDB"/>
                 <var name="Last_Results" type="YESNO" initValue="No" description="Determines if user has hit the Last Results node before."/>
                 <var name="First_Results" type="YESNO" initValue="No" description="Determines if user has gone back to first results already."/>
                 <var name="Page" type="TEXT" initValue="new" description="For paging search results: new, next, previous, repeat"/>
-                <var name="Location_Preference" type="TEXT" description="User&amp;apos;s preferred MPAA music location"/>
-                <var name="Genre_Preference" type="TEXT" description="User&amp;apos;s preferred music genre."/>
-                <var name="Search_Now" type="YESNO" initValue="No" description="Tells backend when to call the music API"/>
-                <var name="Recency_Preference" type="TEXT" description="If the music is current or upcoming"/>
-                <var name="Selected_Music" type="TEXT"/>
+                <var name="Genre_Preference" type="TEXT" description="User&amp;apos;s preferred MPAA event rating"/>
+                <var name="Segment_Preference" type="TEXT" description="User&amp;apos;s preferred event genre."/>
+                <var name="Search_Now" type="YESNO" initValue="No" description="Tells backend when to call the event API"/>
+                <var name="Recency_Preference" type="TEXT" description="If the event is current or upcoming"/>
+                <var name="Selected_Event" type="TEXT"/>
                 <var name="ZIP_Code_Preference" type="TEXT" description="User&amp;apos;s indicated ZIP code"/>
                 <var name="Index_Updated" type="YESNO" initValue="Yes"/>
             </var_folder>
@@ -4498,14 +4982,14 @@ body
 
 .title
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
 }
 
 .subtitle
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 13px;
 	font-weight: none;
 }
@@ -4519,7 +5003,7 @@ body
 
 .sectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -4534,7 +5018,7 @@ body
 
 .subsectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -4543,18 +5027,18 @@ body
 
 .label
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 300px;
 	background-color: #eeeeff;
 	padding: 3px 3px 3px 3px;
-	
+
 }
 
 .value
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 50px;
@@ -4564,7 +5048,7 @@ body
 
 .xaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -4573,7 +5057,7 @@ body
 
 .yaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -4619,14 +5103,14 @@ var tableSetTemplateOI= &amp;quot;&amp;lt;table class=subsection&amp;gt;&amp;lt;
 &amp;lt;tr&amp;gt;
 	&amp;lt;td&amp;gt;
 &amp;lt;%
-	var conversionSet = VALUE_SET(	&amp;quot;Visitors and chats&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-				totalWebsiteVisitors, &amp;quot;1&amp;quot;, &amp;quot;Website visitors&amp;quot;, 
-				numChats, &amp;quot;1&amp;quot;, &amp;quot;Website visitors who chatted to the CyberTwin&amp;quot;, 
+	var conversionSet = VALUE_SET(	&amp;quot;Visitors and chats&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+				totalWebsiteVisitors, &amp;quot;1&amp;quot;, &amp;quot;Website visitors&amp;quot;,
+				numChats, &amp;quot;1&amp;quot;, &amp;quot;Website visitors who chatted to the CyberTwin&amp;quot;,
 				FORMAT_NUMBER(MULTIPLY(DIVIDE(numChats, totalWebsiteVisitors), &amp;quot;100&amp;quot;), &amp;quot;##.##&amp;quot;), &amp;quot;0&amp;quot;, &amp;quot;Chat Uptake&amp;quot;);
 
 	PRINT_TEMPLATE(conversionSet, tableSetTemplate1);
 %&amp;gt;
-		
+
 	&amp;lt;/td&amp;gt;
 &amp;lt;/tr&amp;gt;
 &amp;lt;/table&amp;gt;
@@ -4640,37 +5124,37 @@ var tableSetTemplateOI= &amp;quot;&amp;lt;table class=subsection&amp;gt;&amp;lt;
 &amp;lt;tr&amp;gt;
 	&amp;lt;td&amp;gt;
 &amp;lt;%
-	var chatVolumeSet = VALUE_SET(&amp;quot;Chat Volume&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-		numChats, &amp;quot;1&amp;quot;, &amp;quot;Total Chats&amp;quot;, 
-		numEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;Engaging Chats&amp;quot;, 
+	var chatVolumeSet = VALUE_SET(&amp;quot;Chat Volume&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+		numChats, &amp;quot;1&amp;quot;, &amp;quot;Total Chats&amp;quot;,
+		numEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;Engaging Chats&amp;quot;,
 		numNonEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;NonEngaging Chats&amp;quot;);
 
 	PRINT_TEMPLATE(chatVolumeSet, tableSetTemplate1);
-	
 
 
-	var timeChatsSet = VALUE_SET(	&amp;quot;Chat Time&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-				CHATSTATS_TIME_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg minutes&amp;quot;, 
-				CHATSTATS_TIME_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min minutes&amp;quot;, 
-				CHATSTATS_TIME_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max minutes&amp;quot;, 
+
+	var timeChatsSet = VALUE_SET(	&amp;quot;Chat Time&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+				CHATSTATS_TIME_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg minutes&amp;quot;,
+				CHATSTATS_TIME_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min minutes&amp;quot;,
+				CHATSTATS_TIME_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max minutes&amp;quot;,
 				CHATSTATS_TIME_TOTAL(), &amp;quot;1&amp;quot;, &amp;quot;Total minutes&amp;quot;);
 
 	PRINT_TEMPLATE(timeChatsSet, tableSetTemplate1);
 
-	PRINT_TEMPLATE(CHATSTATS_TIME_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);	
+	PRINT_TEMPLATE(CHATSTATS_TIME_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);
 
 
 
 
-	var msgChatsSet = VALUE_SET(	&amp;quot;Chat Messages&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-				CHATSTATS_MSG_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg messages&amp;quot;, 
-				CHATSTATS_MSG_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min messages&amp;quot;, 
-				CHATSTATS_MSG_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max messages&amp;quot;, 
+	var msgChatsSet = VALUE_SET(	&amp;quot;Chat Messages&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+				CHATSTATS_MSG_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg messages&amp;quot;,
+				CHATSTATS_MSG_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min messages&amp;quot;,
+				CHATSTATS_MSG_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max messages&amp;quot;,
 				CHATSTATS_MSG_TOTAL(), &amp;quot;1&amp;quot;, &amp;quot;Total messages&amp;quot;);
 
 	PRINT_TEMPLATE(msgChatsSet, tableSetTemplate1);
 
-	PRINT_TEMPLATE(CHATSTATS_MSG_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);	
+	PRINT_TEMPLATE(CHATSTATS_MSG_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);
 	%&amp;gt;
 
 
@@ -4714,11 +5198,11 @@ var tableSetTemplateOI= &amp;quot;&amp;lt;table class=subsection&amp;gt;&amp;lt;
 	var chatsDeflected = MULTIPLY(numChats, normFeedback);
 	var savings = MULTIPLY(chatsDeflected, costPerContactCentreContact);
 
-	var contactCentreSavingsSet = VALUE_SET(	&amp;quot;Contact center savings with CyberTwin&amp;quot;,&amp;quot;&amp;quot;,&amp;quot;&amp;quot;, 
-					numChats, &amp;quot;1&amp;quot;, &amp;quot;Number of chats&amp;quot;, 
-					percFeedback, &amp;quot;0&amp;quot;, &amp;quot;% would have contacted the contact center&amp;quot;, 
-					chatsDeflected, &amp;quot;1&amp;quot;, &amp;quot;Chats deflected&amp;quot;, 
-					costPerContactCentreContact, &amp;quot;5&amp;quot;, &amp;quot;Cost per contact center contact&amp;quot;, 
+	var contactCentreSavingsSet = VALUE_SET(	&amp;quot;Contact center savings with CyberTwin&amp;quot;,&amp;quot;&amp;quot;,&amp;quot;&amp;quot;,
+					numChats, &amp;quot;1&amp;quot;, &amp;quot;Number of chats&amp;quot;,
+					percFeedback, &amp;quot;0&amp;quot;, &amp;quot;% would have contacted the contact center&amp;quot;,
+					chatsDeflected, &amp;quot;1&amp;quot;, &amp;quot;Chats deflected&amp;quot;,
+					costPerContactCentreContact, &amp;quot;5&amp;quot;, &amp;quot;Cost per contact center contact&amp;quot;,
 					savings, &amp;quot;5&amp;quot;, &amp;quot;&amp;lt;b&amp;gt;Total Cost Deflected by CyberTwin&amp;lt;/b&amp;gt;&amp;quot;);
 
 	PRINT_TEMPLATE(contactCentreSavingsSet, tableSetTemplate2);
@@ -4748,14 +5232,14 @@ var tableSetTemplateOI= &amp;quot;&amp;lt;table class=subsection&amp;gt;&amp;lt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Length of chats - avg. messages&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;%PRINT_NUMBER(CHATSTATS_MSG_AVG(),&amp;quot;##.#&amp;quot;);%&amp;gt;msgs&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;-&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;-&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Chats cut short&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;0%&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;15%&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;14% abandoned, 19% unresolved on first call&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Abandoned calls&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;0%&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;14%&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
-		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Agent utilisation&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;100%, 24 hrs a day&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;-&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;59%&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;	
-		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;# Concurrent sessions&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;thousands per server&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;1&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;	
+		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Agent utilisation&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;100%, 24 hrs a day&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;-&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;59%&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
+		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;# Concurrent sessions&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;thousands per server&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;1&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Staff attrition&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;0%&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;-&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;24%&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
 		&amp;lt;/table&amp;gt;
 
 /*
 		&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;
-		
+
 		&amp;lt;table&amp;gt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Overall Accuracy&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;%PRINT_NUMBER(ACCURACY_RATE(),&amp;quot;##.#%&amp;quot;);%&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
 		&amp;lt;tr&amp;gt;&amp;lt;td class=label&amp;gt;Direct Match Rate&amp;lt;/td&amp;gt;&amp;lt;td class=value&amp;gt;&amp;lt;%PRINT_NUMBER(DIRECT_MATCH_RATE(),&amp;quot;##.#%&amp;quot;);%&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;
@@ -4775,11 +5259,11 @@ var tableSetTemplateOI= &amp;quot;&amp;lt;table class=subsection&amp;gt;&amp;lt;
 &amp;lt;/tr&amp;gt;
 &amp;lt;tr&amp;gt;
 	&amp;lt;td&amp;gt;
-	
+
 &amp;lt;%
 	var foldersSet = HIT_COUNT_TOP(&amp;quot;FOLDER&amp;quot;, topHitsNodeIdScope, numTopHits, &amp;quot;Most Popular Topics of Interest&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Topic&amp;quot;);
 	PRINT_GRAPH_TEMPLATE(foldersSet, &amp;quot;PIE&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetTemplate2);
-	
+
 	var questionSet = HIT_COUNT_TOP(&amp;quot;INPUT&amp;quot;, topHitsNodeIdScope, numTopHits, &amp;quot;Most Frequently Asked Questions&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Question&amp;quot;);
 PRINT_TEMPLATE(questionSet, tableSetTemplate3);
 
@@ -4837,14 +5321,14 @@ body
 
 .title
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
 }
 
 .subtitle
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 13px;
 	font-weight: none;
 }
@@ -4858,7 +5342,7 @@ body
 
 .sectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -4873,7 +5357,7 @@ body
 
 .subsectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -4882,29 +5366,29 @@ body
 
 .label
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 300px;
 	background-color: #eeeeff;
 	padding: 3px 3px 3px 3px;
-	
+
 }
 
 
 .simplelabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	background-color: #eeeeff;
 	padding: 3px 3px 3px 3px;
-	
+
 }
 
 .value
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 50px;
@@ -4914,7 +5398,7 @@ body
 
 .simplevalue
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	background-color: #eeeeff;
@@ -4923,7 +5407,7 @@ body
 
 .xaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -4932,7 +5416,7 @@ body
 
 .yaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -4980,39 +5464,39 @@ var tableSetGraphTemplate4 = &amp;quot;&amp;lt;table class=subsection&amp;gt;&am
 &amp;lt;tr&amp;gt;
 	&amp;lt;td&amp;gt;
 &amp;lt;%
-	var chatVolumeSet = VALUE_SET(&amp;quot;Chat Volume&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-		numChats, &amp;quot;1&amp;quot;, &amp;quot;Total Chats&amp;quot;, 
-		numEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;Engaging Chats&amp;quot;, 
+	var chatVolumeSet = VALUE_SET(&amp;quot;Chat Volume&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+		numChats, &amp;quot;1&amp;quot;, &amp;quot;Total Chats&amp;quot;,
+		numEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;Engaging Chats&amp;quot;,
 		numNonEngagingChats, &amp;quot;1&amp;quot;, &amp;quot;NonEngaging Chats&amp;quot;);
 
 	PRINT_TEMPLATE(chatVolumeSet, tableSetTemplate1);
-	
 
 
-	var timeChatsSet = VALUE_SET(	&amp;quot;Chat Time&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-				CHATSTATS_TIME_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg minutes&amp;quot;, 
-				CHATSTATS_TIME_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min minutes&amp;quot;, 
-				CHATSTATS_TIME_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max minutes&amp;quot;, 
+
+	var timeChatsSet = VALUE_SET(	&amp;quot;Chat Time&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+				CHATSTATS_TIME_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg minutes&amp;quot;,
+				CHATSTATS_TIME_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min minutes&amp;quot;,
+				CHATSTATS_TIME_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max minutes&amp;quot;,
 				CHATSTATS_TIME_MEDIAN(), &amp;quot;1&amp;quot;, &amp;quot;Median minutes&amp;quot;,
 				CHATSTATS_TIME_TOTAL(), &amp;quot;1&amp;quot;, &amp;quot;Total minutes&amp;quot;);
 
 	PRINT_TEMPLATE(timeChatsSet, tableSetTemplate1);
 
-	PRINT_GRAPH_TEMPLATE(CHATSTATS_TIME_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);	
+	PRINT_GRAPH_TEMPLATE(CHATSTATS_TIME_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);
 
 
 
 
-	var msgChatsSet = VALUE_SET(	&amp;quot;Chat Messages&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;, 
-				CHATSTATS_MSG_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg messages&amp;quot;, 
-				CHATSTATS_MSG_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min messages&amp;quot;, 
-				CHATSTATS_MSG_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max messages&amp;quot;, 
-				CHATSTATS_MSG_MEDIAN(), &amp;quot;1&amp;quot;, &amp;quot;Median messages&amp;quot;, 
+	var msgChatsSet = VALUE_SET(	&amp;quot;Chat Messages&amp;quot;, &amp;quot;#&amp;quot;, &amp;quot;Measurement&amp;quot;,
+				CHATSTATS_MSG_AVG(), &amp;quot;1&amp;quot;, &amp;quot;Avg messages&amp;quot;,
+				CHATSTATS_MSG_MIN(), &amp;quot;1&amp;quot;, &amp;quot;Min messages&amp;quot;,
+				CHATSTATS_MSG_MAX(), &amp;quot;1&amp;quot;, &amp;quot;Max messages&amp;quot;,
+				CHATSTATS_MSG_MEDIAN(), &amp;quot;1&amp;quot;, &amp;quot;Median messages&amp;quot;,
 				CHATSTATS_MSG_TOTAL(), &amp;quot;1&amp;quot;, &amp;quot;Total messages&amp;quot;);
 
 	PRINT_TEMPLATE(msgChatsSet, tableSetTemplate1);
 
-	PRINT_GRAPH_TEMPLATE(CHATSTATS_MSG_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);	
+	PRINT_GRAPH_TEMPLATE(CHATSTATS_MSG_SPREAD(&amp;quot;&amp;quot;,&amp;quot;%&amp;quot;,&amp;quot;Measurement&amp;quot;), &amp;quot;BAR&amp;quot;, &amp;quot;300&amp;quot;, &amp;quot;300&amp;quot;, tableSetGraphTemplate3);
 	%&amp;gt;
 
 
@@ -5038,7 +5522,7 @@ var tableSetGraphTemplate4 = &amp;quot;&amp;lt;table class=subsection&amp;gt;&am
 	&amp;lt;/td&amp;gt;
 &amp;lt;/tr&amp;gt;
 &amp;lt;/table&amp;gt;
-	
+
 &amp;lt;table class=section&amp;gt;
 &amp;lt;tr&amp;gt;
 	&amp;lt;td class=sectionHeading&amp;gt;Input Node Stats&amp;lt;/td&amp;gt;
@@ -5049,7 +5533,7 @@ var tableSetGraphTemplate4 = &amp;quot;&amp;lt;table class=subsection&amp;gt;&am
 	&amp;lt;/td&amp;gt;
 &amp;lt;/tr&amp;gt;
 &amp;lt;/table&amp;gt;
-		
+
 &amp;lt;/body&amp;gt;
 &amp;lt;/html&amp;gt;</script>
         </report>
@@ -5075,14 +5559,14 @@ body
 
 .title
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
 }
 
 .subtitle
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 13px;
 	font-weight: none;
 }
@@ -5096,7 +5580,7 @@ body
 
 .sectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -5111,7 +5595,7 @@ body
 
 .subsectionHeading
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #eeeeee;
@@ -5120,18 +5604,18 @@ body
 
 .label
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 300px;
 	background-color: #eeeeff;
 	padding: 3px 3px 3px 3px;
-	
+
 }
 
 .value
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: none;
 	width: 50px;
@@ -5141,7 +5625,7 @@ body
 
 .xaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -5150,7 +5634,7 @@ body
 
 .yaxislabel
 {
-	font-family: verdana, arial, sans-serif; 
+	font-family: verdana, arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	background-color: #eeeeff;
@@ -5202,14 +5686,14 @@ var table3ColTemplateGraph2 = "&lt;table class=subsection&gt;&lt;tr&gt;&lt;td va
 &lt;tr&gt;
 	&lt;td&gt;
 &lt;%
-	var conversionSet = VALUE_SET(	"Visitors and chats", "#", "Measurement", 
-				totalWebsiteVisitors, "1", "Website visitors", 
-				numChats, "1", "Website visitors who chatted to the CyberTwin", 
+	var conversionSet = VALUE_SET(	"Visitors and chats", "#", "Measurement",
+				totalWebsiteVisitors, "1", "Website visitors",
+				numChats, "1", "Website visitors who chatted to the CyberTwin",
 				FORMAT_NUMBER(MULTIPLY(DIVIDE(numChats, totalWebsiteVisitors), "100"), "##.##"), "0", "Chat Uptake");
 
 	PRINT_TEMPLATE(conversionSet, tableSetTemplate1);
 %&gt;
-		
+
 	&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
@@ -5223,60 +5707,60 @@ var table3ColTemplateGraph2 = "&lt;table class=subsection&gt;&lt;tr&gt;&lt;td va
 &lt;tr&gt;
 	&lt;td&gt;
 &lt;%
-	var chatVolumeSet = VALUE_SET("Chat Volume", "#", "Measurement", 
-		numChats, "1", "Total Chats", 
-		numEngagingChats, "1", "Engaging Chats", 
+	var chatVolumeSet = VALUE_SET("Chat Volume", "#", "Measurement",
+		numChats, "1", "Total Chats",
+		numEngagingChats, "1", "Engaging Chats",
 		FORMAT_NUMBER(MULTIPLY(DIVIDE(numEngagingChats, numChats),"100"),"##.##"), "0", "% Engaging Chats");
 
 	PRINT_TEMPLATE(chatVolumeSet, tableSetTemplate1);
-	
 
 
-	var timeChatsSet = VALUE_SET(	"Chat Time", "#", "Measurement", 
-				CHATSTATS_TIME_AVG(), "1", "Avg minutes", 
-				CHATSTATS_TIME_MIN(), "1", "Min minutes", 
-				CHATSTATS_TIME_MAX(), "1", "Max minutes", 
+
+	var timeChatsSet = VALUE_SET(	"Chat Time", "#", "Measurement",
+				CHATSTATS_TIME_AVG(), "1", "Avg minutes",
+				CHATSTATS_TIME_MIN(), "1", "Min minutes",
+				CHATSTATS_TIME_MAX(), "1", "Max minutes",
 				CHATSTATS_TIME_MEDIAN(), "1", "Median minutes",
 				CHATSTATS_TIME_TOTAL(), "1", "Total minutes");
 
 	PRINT_TEMPLATE(timeChatsSet, tableSetTemplate1);
 
-	PRINT_TEMPLATE(CHATSTATS_TIME_SPREAD("","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);	
+	PRINT_TEMPLATE(CHATSTATS_TIME_SPREAD("","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);
 
 
 
 
-	var msgChatsSet = VALUE_SET(	"Chat Messages", "#", "Measurement", 
-				CHATSTATS_MSG_AVG(), "1", "Avg messages", 
-				CHATSTATS_MSG_MIN(), "1", "Min messages", 
-				CHATSTATS_MSG_MAX(), "1", "Max messages", 
-				CHATSTATS_MSG_MEDIAN(), "1", "Median messages", 
+	var msgChatsSet = VALUE_SET(	"Chat Messages", "#", "Measurement",
+				CHATSTATS_MSG_AVG(), "1", "Avg messages",
+				CHATSTATS_MSG_MIN(), "1", "Min messages",
+				CHATSTATS_MSG_MAX(), "1", "Max messages",
+				CHATSTATS_MSG_MEDIAN(), "1", "Median messages",
 				CHATSTATS_MSG_TOTAL(), "1", "Total messages");
 
 	PRINT_TEMPLATE(msgChatsSet, tableSetTemplate1);
 
-	PRINT_TEMPLATE(CHATSTATS_MSG_SPREAD("","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);	
-	
-	
-	
+	PRINT_TEMPLATE(CHATSTATS_MSG_SPREAD("","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);
+
+
+
 	/*
-	var chatDUSet = VALUE_SET(	"Dinstinct Users", "#", "Measurement", 
-				CHATSTATS_DISTINCTUSER_NUM(), "1", "Num of distinct users", 
-				CHATSTATS_DISTINCTUSER_AVG(), "1", "Avg chats", 
-				CHATSTATS_DISTINCTUSER_MIN(), "1", "Min chats", 
-				CHATSTATS_DISTINCTUSER_MAX(), "1", "Max chats", 
-				CHATSTATS_DISTINCTUSER_MEDIAN(), "1", "Median chats", 
+	var chatDUSet = VALUE_SET(	"Dinstinct Users", "#", "Measurement",
+				CHATSTATS_DISTINCTUSER_NUM(), "1", "Num of distinct users",
+				CHATSTATS_DISTINCTUSER_AVG(), "1", "Avg chats",
+				CHATSTATS_DISTINCTUSER_MIN(), "1", "Min chats",
+				CHATSTATS_DISTINCTUSER_MAX(), "1", "Max chats",
+				CHATSTATS_DISTINCTUSER_MEDIAN(), "1", "Median chats",
 				CHATSTATS_DISTINCTUSER_TOTAL(), "1", "Total chats");
 
 	PRINT_TEMPLATE(chatDUSet, tableSetTemplate1);
 
 	PRINT_GRAPH_TEMPLATE(CHATSTATS_DISTINCTUSER_SPREAD("","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);
 	*/
-	
-	
-	
+
+
+
 	PRINT_TEMPLATE(CHATSTATS_LOCATION_SPREAD("Location","%","Measurement"), "BAR", "300", "300", tableSetGraphTemplate3);
-	
+
 	%&gt;
 
 
@@ -5320,11 +5804,11 @@ var table3ColTemplateGraph2 = "&lt;table class=subsection&gt;&lt;tr&gt;&lt;td va
 	var chatsDeflected = MULTIPLY(numChats, normFeedback);
 	var savings = MULTIPLY(chatsDeflected, costPerContactCentreContact);
 
-	var contactCentreSavingsSet = VALUE_SET(	"Contact center savings with CyberTwin","","", 
-					numChats, "1", "Number of chats", 
-					percFeedback, "0", "% would have contacted the contact center", 
-					chatsDeflected, "1", "Chats deflected", 
-					costPerContactCentreContact, "5", "Cost per contact center contact", 
+	var contactCentreSavingsSet = VALUE_SET(	"Contact center savings with CyberTwin","","",
+					numChats, "1", "Number of chats",
+					percFeedback, "0", "% would have contacted the contact center",
+					chatsDeflected, "1", "Chats deflected",
+					costPerContactCentreContact, "5", "Cost per contact center contact",
 					savings, "5", "&lt;b&gt;Total Cost Deflected by CyberTwin&lt;/b&gt;");
 
 	PRINT_TEMPLATE(contactCentreSavingsSet, tableSetTemplate2);
@@ -5354,14 +5838,14 @@ var table3ColTemplateGraph2 = "&lt;table class=subsection&gt;&lt;tr&gt;&lt;td va
 		&lt;tr&gt;&lt;td class=label&gt;Length of chats - avg. messages&lt;/td&gt;&lt;td class=value&gt;&lt;%PRINT_NUMBER(CHATSTATS_MSG_AVG(),"##.#");%&gt;msgs&lt;/td&gt;&lt;td class=value&gt;-&lt;/td&gt;&lt;td class=value&gt;-&lt;/td&gt;&lt;/tr&gt;
 		&lt;tr&gt;&lt;td class=label&gt;Chats cut short&lt;/td&gt;&lt;td class=value&gt;0%&lt;/td&gt;&lt;td class=value&gt;15%&lt;/td&gt;&lt;td class=value&gt;14% abandoned, 19% unresolved on first call&lt;/td&gt;&lt;/tr&gt;
 		&lt;tr&gt;&lt;td class=label&gt;Abandoned calls&lt;/td&gt;&lt;td class=value&gt;0%&lt;/td&gt;&lt;td class=value&gt;&lt;/td&gt;&lt;td class=value&gt;14%&lt;/td&gt;&lt;/tr&gt;
-		&lt;tr&gt;&lt;td class=label&gt;Agent utilisation&lt;/td&gt;&lt;td class=value&gt;100%, 24 hrs a day&lt;/td&gt;&lt;td class=value&gt;-&lt;/td&gt;&lt;td class=value&gt;59%&lt;/td&gt;&lt;/tr&gt;	
-		&lt;tr&gt;&lt;td class=label&gt;# Concurrent sessions&lt;/td&gt;&lt;td class=value&gt;thousands per server&lt;/td&gt;&lt;td class=value&gt;&lt;/td&gt;&lt;td class=value&gt;1&lt;/td&gt;&lt;/tr&gt;	
+		&lt;tr&gt;&lt;td class=label&gt;Agent utilisation&lt;/td&gt;&lt;td class=value&gt;100%, 24 hrs a day&lt;/td&gt;&lt;td class=value&gt;-&lt;/td&gt;&lt;td class=value&gt;59%&lt;/td&gt;&lt;/tr&gt;
+		&lt;tr&gt;&lt;td class=label&gt;# Concurrent sessions&lt;/td&gt;&lt;td class=value&gt;thousands per server&lt;/td&gt;&lt;td class=value&gt;&lt;/td&gt;&lt;td class=value&gt;1&lt;/td&gt;&lt;/tr&gt;
 		&lt;tr&gt;&lt;td class=label&gt;Staff attrition&lt;/td&gt;&lt;td class=value&gt;0%&lt;/td&gt;&lt;td class=value&gt;-&lt;/td&gt;&lt;td class=value&gt;24%&lt;/td&gt;&lt;/tr&gt;
 		&lt;/table&gt;
 
 
 		&lt;br&gt;&lt;br&gt;
-		
+
 		&lt;table&gt;
 		&lt;tr&gt;&lt;td class=label&gt;Overall Accuracy&lt;/td&gt;&lt;td class=value&gt;&lt;%PRINT_NUMBER(ACCURACY_RATE(),"##.#%");%&gt;&lt;/td&gt;&lt;/tr&gt;
 		&lt;tr&gt;&lt;td class=label&gt;Direct Match Rate&lt;/td&gt;&lt;td class=value&gt;&lt;%PRINT_NUMBER(DIRECT_MATCH_RATE(),"##.#%");%&gt;&lt;/td&gt;&lt;/tr&gt;
@@ -5381,11 +5865,11 @@ var table3ColTemplateGraph2 = "&lt;table class=subsection&gt;&lt;tr&gt;&lt;td va
 &lt;/tr&gt;
 &lt;tr&gt;
 	&lt;td&gt;
-	
+
 &lt;%
 	var foldersSet = HIT_COUNT_TOP("FOLDER", topHitsNodeIdScope, numTopHits, "Most Popular Topics of Interest", "#", "Topic");
 	PRINT_TEMPLATE(foldersSet, "PIE", "300", "300", tableSetGraphTemplate2);
-	
+
 	var questionSet = HIT_COUNT_TOP("INPUT", topHitsNodeIdScope, numTopHits, "Most Frequently Asked Questions", "#", "Question");
 	PRINT_TEMPLATE(questionSet, tableSetTemplate2);
 

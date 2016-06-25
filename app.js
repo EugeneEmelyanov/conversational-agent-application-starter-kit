@@ -115,7 +115,9 @@ app.post('/api/conversation', function(req, res, next) {
 
             return converse(params)
             .then(function(result) {
-              res.json(extend(result[0], searchResult));
+              for(var k in searchResult)
+                result[0][k]=searchResult[k];
+              res.json(result[0]);
             });
           });
         });
